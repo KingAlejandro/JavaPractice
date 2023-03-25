@@ -100,6 +100,7 @@ public class Main {
                             System.out.println("Invalid");
                             break;
                     }
+                    break;
                 case 7:
                     System.out.println("Exiting phonebook...");
                     System.exit(0);
