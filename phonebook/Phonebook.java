@@ -1,8 +1,8 @@
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.BufferedReader;
 
 public class Phonebook {
     private Connection connection;
@@ -128,4 +128,62 @@ public class Phonebook {
             e.printStackTrace();
         }
     }
+
+    public void exportToCsv(String fileName) {
+        try {
+            FileWriter writer = new FileWriter(fileName);
+
+            String selectAllSQL = "SELECT * FROM phonebook";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(selectAllSQL);
+
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                if (i > 1) {
+                    writer.append(",");
+                }
+                String columnName = metaData.getColumnLabel(i);
+                writer.append(columnName);
+            }
+            writer.append("\n");
+
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    if (i > 1) {
+                        writer.append(",");
+                    }
+                    String columnValue = resultSet.getString(i);
+                    writer.append(columnValue);
+                }
+                writer.append("\n");
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importFromCsv(String fileName) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+    
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                String name = values[0];
+                String phoneNumber = values[1];
+                addEntry(name, phoneNumber);
+            }
+    
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
 }

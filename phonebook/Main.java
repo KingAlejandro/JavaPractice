@@ -8,7 +8,7 @@ public class Main {
 
         while (true) {
             System.out.println(
-                    "Select an option: n1. Add a contact, n2. Remove a contact, n3. Update a contact, n4. Search, n5. Display all contacts, n6. Quit");
+                    "Select an option: n1. Add a contact, n2. Remove a contact, n3. Update a contact, n4. Search, n5. Display all contacts, n6. Import/Export, n7. Quit");
             choice = scanner.nextInt();
             scanner.nextLine(); // to consume the leftover newline character
 
@@ -77,6 +77,30 @@ public class Main {
                     phonebook.displayAllContacts();
                     break;
                 case 6:
+                    System.out.println(
+                            "n1. Import, n2. Export");
+                    int ExportImportChoice = scanner.nextInt();
+                    scanner.nextLine(); // to consume the leftover newline character
+
+                    String filepath;
+                    switch (ExportImportChoice) {
+                        case 1:
+                            System.out.println("Enter file path:");
+                            filepath = scanner.nextLine();
+
+                            phonebook.importFromCsv(filepath);
+                            break;
+                        case 2:
+                            System.out.println("Enter file path:");
+                            filepath = scanner.nextLine();
+
+                            phonebook.exportToCsv(filepath);
+                            break;
+                        default:
+                            System.out.println("Invalid");
+                            break;
+                    }
+                case 7:
                     System.out.println("Exiting phonebook...");
                     System.exit(0);
                 default:
