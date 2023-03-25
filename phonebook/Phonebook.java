@@ -140,14 +140,14 @@ public class Phonebook {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
 
-            for (int i = 1; i <= columnCount; i++) {
-                if (i > 1) {
-                    writer.append(",");
-                }
-                String columnName = metaData.getColumnLabel(i);
-                writer.append(columnName);
-            }
-            writer.append("\n");
+            // for (int i = 1; i <= columnCount; i++) {
+            //     if (i > 1) {
+            //         writer.append(",");
+            //     }
+            //     String columnName = metaData.getColumnLabel(i);
+            //     writer.append(columnName);
+            // }
+            // writer.append("\n");
 
             while (resultSet.next()) {
                 for (int i = 1; i <= columnCount; i++) {
