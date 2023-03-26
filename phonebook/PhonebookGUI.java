@@ -120,16 +120,17 @@ public class PhonebookGUI extends JFrame {
                 if (result == JOptionPane.OK_OPTION) {
                     String query = searchField.getText();
                     ArrayList<String> contacts = phonebook.searchContacts(query);
-                if (contacts != null) {
-                    JList<String> list = new JList<>(contacts.toArray(new String[0]));
-                    JScrollPane scrollPane = new JScrollPane(list);
-                    scrollPane.setPreferredSize(new Dimension(400, 300));
-                    JOptionPane.showMessageDialog(null, scrollPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No contacts found", "Search Results", JOptionPane.PLAIN_MESSAGE);
+                    if (contacts != null) {
+                        JList<String> list = new JList<>(contacts.toArray(new String[0]));
+                        JScrollPane scrollPane = new JScrollPane(list);
+                        scrollPane.setPreferredSize(new Dimension(400, 300));
+                        JOptionPane.showMessageDialog(null, scrollPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No contacts found", "Search Results",
+                                JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
             }
-        }
         });
         panel.add(searchButton, c);
 
@@ -161,10 +162,20 @@ public class PhonebookGUI extends JFrame {
                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                 switch (choice) {
                     case 0:
-                        // do something when "Import from CSV" is selected
+                        JFileChooser fileChooser = new JFileChooser();
+                        int returnVal = fileChooser.showOpenDialog(null);
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            String filepath = fileChooser.getSelectedFile().getAbsolutePath();
+                            phonebook.importFromCsv(filepath);
+                        }
                         break;
                     case 1:
-                        // do something when "Export to CSV" is selected
+                        JFileChooser fileSaveChooser = new JFileChooser();
+                        int returnSaveVal = fileSaveChooser.showSaveDialog(null);
+                        if (returnSaveVal == JFileChooser.APPROVE_OPTION) {
+                            String filepath = fileSaveChooser.getSelectedFile().getAbsolutePath();
+                            phonebook.exportToCsv(filepath);
+                        }
                         break;
                     default:
                         break;
