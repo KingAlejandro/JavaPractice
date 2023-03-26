@@ -41,7 +41,8 @@ public class PhonebookGUI extends JFrame {
                 if (result == JOptionPane.OK_OPTION) {
                     String name = nameField.getText();
                     String phoneNumber = phoneField.getText();
-                    phonebook.addEntry(name, phoneNumber);
+                    Contact contact = new Contact(name, phoneNumber);
+                    phonebook.addEntry(contact);
                     System.out.println(name + " has been added to the phonebook.");
                     JOptionPane.showMessageDialog(null, name + " has been added to the phonebook.");
 
@@ -119,9 +120,14 @@ public class PhonebookGUI extends JFrame {
 
                 if (result == JOptionPane.OK_OPTION) {
                     String query = searchField.getText();
-                    ArrayList<String> contacts = phonebook.searchContacts(query);
+                    ArrayList<Contact> contacts = phonebook.searchContacts(query);
                     if (contacts != null) {
-                        JList<String> list = new JList<>(contacts.toArray(new String[0]));
+                        DefaultListModel<Contact> listModel = new DefaultListModel<>();
+                        for (Contact contact : contacts) {
+                            listModel.addElement(contact);
+                        }
+                        JList<Contact> list = new JList<>(listModel);
+                        list.setCellRenderer(new ContactListRenderer());
                         JScrollPane scrollPane = new JScrollPane(list);
                         scrollPane.setPreferredSize(new Dimension(400, 300));
                         JOptionPane.showMessageDialog(null, scrollPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
@@ -132,6 +138,7 @@ public class PhonebookGUI extends JFrame {
                 }
             }
         });
+
         panel.add(searchButton, c);
 
         c.gridy = 5;
@@ -139,14 +146,20 @@ public class PhonebookGUI extends JFrame {
         displayAllButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<String> contacts = phonebook.displayAllContacts();
+                ArrayList<Contact> contacts = phonebook.displayAllContacts();
                 if (contacts != null) {
-                    JList<String> list = new JList<>(contacts.toArray(new String[0]));
+                    DefaultListModel<Contact> listModel = new DefaultListModel<>();
+                    for (Contact contact : contacts) {
+                        listModel.addElement(contact);
+                    }
+                    JList<Contact> list = new JList<>(listModel);
+                    list.setCellRenderer(new ContactListRenderer());
                     JScrollPane scrollPane = new JScrollPane(list);
                     scrollPane.setPreferredSize(new Dimension(400, 300));
                     JOptionPane.showMessageDialog(null, scrollPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "No contacts found", "All Contacts", JOptionPane.PLAIN_MESSAGE);
+
                 }
             }
         });
@@ -197,6 +210,17 @@ public class PhonebookGUI extends JFrame {
 
         add(panel);
         setVisible(true);
+    }
+
+    public class ContactListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            Contact contact = (Contact) value;
+            label.setText(contact.getName() + ": " + contact.getPhoneNumber());
+            return label;
+        }
     }
 
     public static void main(String[] args) {
