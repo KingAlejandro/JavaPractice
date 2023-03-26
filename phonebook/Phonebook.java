@@ -45,59 +45,65 @@ public class Phonebook {
         }
     }
 
-    public void getPhoneNumber(String name) {
+    public String getPhoneNumber(String name) {
         try {
             String getPhoneNumberSQL = "SELECT phoneNumber FROM phonebook WHERE name = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(getPhoneNumberSQL);
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String phoneNumber = resultSet.getString("phoneNumber");
-                System.out.println(name + ": " + phoneNumber);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getName(String phoneNumber) {
-        try {
-            String getNameSQL = "SELECT name FROM phonebook WHERE phoneNumber = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(getNameSQL);
-            preparedStatement.setString(1, phoneNumber);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                System.out.println(name + ": " + phoneNumber);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ArrayList<String> searchContacts(String query) {
-        try {
-            String searchSQL = "SELECT * FROM phonebook WHERE name LIKE ? or phoneNumber LIKE ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(searchSQL);
-            preparedStatement.setString(1, "%" + query + "%");
-            preparedStatement.setString(2, "%" + query + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<String> contacts = new ArrayList<String>();
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String phoneNumber = resultSet.getString("phoneNumber");
-                contacts.add(name + ": " + phoneNumber);
-            }
-            if (contacts.size() == 0) {
-                return null;
+            if (resultSet.next()) {
+                return resultSet.getString("phoneNumber");
             } else {
-                return contacts;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    public String getName(String phoneNumber) {
+        try {
+            String getNameSQL = "SELECT name FROM phonebook WHERE phoneNumber = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(getNameSQL);
+            preparedStatement.setString(1, phoneNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("name");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+public ArrayList<Contact> searchContacts(String query) {
+    try {
+        String searchSQL = "SELECT * FROM phonebook WHERE name LIKE ? OR phoneNumber LIKE ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(searchSQL);
+        preparedStatement.setString(1, "%" + query + "%");
+        preparedStatement.setString(2, "%" + query + "%");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Contact> contacts = new ArrayList<Contact>();
+        while (resultSet.next()) {
+            String name = resultSet.getString("name");
+            String phoneNumber = resultSet.getString("phoneNumber");
+            Contact contact = new Contact(name, phoneNumber);
+            contacts.add(contact);
+        }
+        if (contacts.size() == 0) {
+            return null;
+        } else {
+            return contacts;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
 
     public void deleteEntry(String name) {
         try {
@@ -122,16 +128,16 @@ public class Phonebook {
         }
     }
 
-    public ArrayList<String> displayAllContacts() {
+    public ArrayList<Contact> displayAllContacts() {
         try {
             String selectAllSQL = "SELECT * FROM phonebook";
             PreparedStatement preparedStatement = connection.prepareStatement(selectAllSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<String> results = new ArrayList<>();
+            ArrayList<Contact> results = new ArrayList<>();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String phoneNumber = resultSet.getString("phoneNumber");
-                results.add(name + ": " + phoneNumber);
+                results.add(new Contact(name, phoneNumber));
             }
             if (results.isEmpty()) {
                 return null;
@@ -143,6 +149,7 @@ public class Phonebook {
             return null;
         }
     }
+
 
     public void exportToCsv(String fileName) {
         try {
@@ -191,7 +198,8 @@ public class Phonebook {
                 String[] values = line.split(",");
                 String name = values[0];
                 String phoneNumber = values[1];
-                // addEntry(name, phoneNumber);
+                Contact contact  = new Contact(name, phoneNumber);
+                addEntry(contact);
             }
     
             reader.close();

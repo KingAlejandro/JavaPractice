@@ -30,7 +30,7 @@ public class Main {
                 case 2:
                     System.out.println("Enter a name to remove from the phonebook:");
                     name = scanner.nextLine();
-
+                    
                     phonebook.deleteEntry(name);
 
                     System.out.println(name + " has been removed from the phonebook.");
@@ -57,22 +57,28 @@ public class Main {
                             System.out.println("Enter a name to search for:");
                             name = scanner.nextLine();
 
-                            phonebook.getPhoneNumber(name);
+                            phoneNumber = phonebook.getPhoneNumber(name);
+                            if (phoneNumber != null) {
+                                System.out.println(phoneNumber);
+                            }
                             break;
                         case 2:
                             System.out.println("Enter a phone number to search for:");
                             phoneNumber = scanner.nextLine();
 
-                            phonebook.getName(phoneNumber);
+                            name = phonebook.getName(phoneNumber);
+                            if (name != null) {
+                                System.out.println(name);
+                            }
                             break;
                         case 3:
                             System.out.println("Enter a part of a name or part of a phone number to search for:");
-                            String partialName = scanner.nextLine();
+                            String query = scanner.nextLine();
 
-                            ArrayList<String> contacts = phonebook.searchContacts(partialName);
+                            ArrayList<Contact> contacts = phonebook.searchContacts(query);
                             if (contacts != null) {
-                                for (String c : contacts) {
-                                    System.out.println(c);
+                                for (Contact c : contacts) {
+                                    c.printContact();
                                 }
                             }
                             break;
@@ -82,10 +88,10 @@ public class Main {
                     }
                     break;
                 case 5:
-                    ArrayList<String> contacts = phonebook.displayAllContacts();
+                    ArrayList<Contact> contacts = phonebook.displayAllContacts();
                     if (contacts != null) {
-                        for (String c : contacts) {
-                            System.out.println(c);
+                        for (Contact c : contacts) {
+                            c.printContact();
                         }
                     }
                     break;
