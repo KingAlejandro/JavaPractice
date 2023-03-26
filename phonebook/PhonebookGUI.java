@@ -129,11 +129,22 @@ public class PhonebookGUI extends JFrame {
         importExportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something when the import/export button is clicked
+                String[] options = {"Import from CSV", "Export to CSV"};
+                int choice = JOptionPane.showOptionDialog(null, "Choose an option", "Import/Export", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                switch (choice) {
+                    case 0:
+                        // do something when "Import from CSV" is selected
+                        break;
+                    case 1:
+                        // do something when "Export to CSV" is selected
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         panel.add(importExportButton, c);
-
+        
         c.gridy = 7;
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new ActionListener() {
