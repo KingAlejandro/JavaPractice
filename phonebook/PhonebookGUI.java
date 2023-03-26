@@ -43,6 +43,8 @@ public class PhonebookGUI extends JFrame {
                     String phoneNumber = phoneField.getText();
                     phonebook.addEntry(name, phoneNumber);
                     System.out.println(name + " has been added to the phonebook.");
+                    JOptionPane.showMessageDialog(null, name + " has been added to the phonebook.");
+
                 }
             }
         });
@@ -54,7 +56,15 @@ public class PhonebookGUI extends JFrame {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something when the remove button is clicked
+                String name = JOptionPane.showInputDialog("Enter a name to remove from the phonebook:");
+
+                if (name != null && !name.isEmpty()) {
+                    phonebook.deleteEntry(name);
+
+                    JOptionPane.showMessageDialog(null, name + " has been removed from the phonebook.");
+                    System.out.println(name + " has been removed from the phonebook.");
+
+                }
             }
         });
         panel.add(removeButton, c);
