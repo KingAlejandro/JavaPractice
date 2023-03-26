@@ -74,7 +74,24 @@ public class PhonebookGUI extends JFrame {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something when the update button is clicked
+                JTextField nameField = new JTextField(10);
+                JTextField phoneNumberField = new JTextField(10);
+
+                JPanel myPanel = new JPanel();
+                myPanel.add(new JLabel("Name:"));
+                myPanel.add(nameField);
+                myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Phone Number:"));
+                myPanel.add(phoneNumberField);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel,
+                        "Please Enter Name and Phone Number", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
+                    String name = nameField.getText();
+                    String phoneNumber = phoneNumberField.getText();
+                    phonebook.updateEntry(name, phoneNumber);
+                    JOptionPane.showMessageDialog(null, name + "'s phone number has been updated in the phonebook.");
+                }
             }
         });
         panel.add(updateButton, c);
