@@ -33,12 +33,12 @@ public class Phonebook {
         }
     }
 
-    public void addEntry(String name, String phoneNumber) {
+    public void addEntry(Contact contact) {
         try {
             String addEntrySQL = "INSERT INTO phonebook (name, phoneNumber) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(addEntrySQL);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, phoneNumber);
+            preparedStatement.setString(1, contact.getName());
+            preparedStatement.setString(2, contact.getPhoneNumber());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -191,7 +191,7 @@ public class Phonebook {
                 String[] values = line.split(",");
                 String name = values[0];
                 String phoneNumber = values[1];
-                addEntry(name, phoneNumber);
+                // addEntry(name, phoneNumber);
             }
     
             reader.close();

@@ -5,7 +5,6 @@ public class Main {
     public static void main(String[] args) {
         Phonebook phonebook = new Phonebook();
         PhonebookGUI phonebookGUI = new PhonebookGUI(phonebook);
-        phonebookGUI.setVisible(true);
         Scanner scanner = new Scanner(System.in);
         int choice;
 
@@ -23,7 +22,8 @@ public class Main {
                     System.out.println("Enter a phone number for " + name + ":");
                     String phoneNumber = scanner.nextLine();
 
-                    phonebook.addEntry(name, phoneNumber);
+                    Contact contact  = new Contact(name, phoneNumber);
+                    phonebook.addEntry(contact);
 
                     System.out.println(name + " has been added to the phonebook.");
                     break;
@@ -71,8 +71,8 @@ public class Main {
 
                             ArrayList<String> contacts = phonebook.searchContacts(partialName);
                             if (contacts != null) {
-                                for (String contact : contacts) {
-                                    System.out.println(contact);
+                                for (String c : contacts) {
+                                    System.out.println(c);
                                 }
                             }
                             break;
@@ -84,8 +84,8 @@ public class Main {
                 case 5:
                     ArrayList<String> contacts = phonebook.displayAllContacts();
                     if (contacts != null) {
-                        for (String contact : contacts) {
-                            System.out.println(contact);
+                        for (String c : contacts) {
+                            System.out.println(c);
                         }
                     }
                     break;
