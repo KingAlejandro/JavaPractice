@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class PhonebookGUI extends JFrame {
     private Phonebook phonebook;
 
     public PhonebookGUI(Phonebook phonebook) {
-        this.phonebook = phonebook;
         setTitle("Phonebook");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
@@ -111,7 +111,18 @@ public class PhonebookGUI extends JFrame {
         displayAllButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something when the display all button is clicked
+                ArrayList<String> contacts = phonebook.displayAllContacts();
+                if (contacts != null) {
+                    JTextArea textArea = new JTextArea();
+                    for (String contact : contacts) {
+                        textArea.append(contact + "\n");
+                    }
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(400, 300));
+                    JOptionPane.showMessageDialog(null, scrollPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No contacts found", "All Contacts", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
         panel.add(displayAllButton, c);
