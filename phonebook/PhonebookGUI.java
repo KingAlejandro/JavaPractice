@@ -28,14 +28,14 @@ public class PhonebookGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JTextField nameField = new JTextField(10);
                 JTextField phoneField = new JTextField(10);
-        
+
                 JPanel myPanel = new JPanel();
                 myPanel.add(new JLabel("Name:"));
                 myPanel.add(nameField);
                 myPanel.add(Box.createHorizontalStrut(15)); // a spacer
                 myPanel.add(new JLabel("Phone Number:"));
                 myPanel.add(phoneField);
-        
+
                 int result = JOptionPane.showConfirmDialog(null, myPanel,
                         "Please Enter Name and Phone Number", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
@@ -48,7 +48,7 @@ public class PhonebookGUI extends JFrame {
                 }
             }
         });
-        
+
         panel.add(addButton, c);
 
         c.gridy = 2;
@@ -101,8 +101,35 @@ public class PhonebookGUI extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something when the search button is clicked
+                JPanel searchPanel = new JPanel();
+                searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
+
+                JLabel searchLabel = new JLabel("Enter name to search:");
+                searchPanel.add(searchLabel);
+
+                JTextField searchField = new JTextField();
+                searchPanel.add(searchField);
+
+                int result = JOptionPane.showConfirmDialog(
+                        null,
+                        searchPanel,
+                        "Search",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    String query = searchField.getText();
+                    ArrayList<String> contacts = phonebook.searchContacts(query);
+                if (contacts != null) {
+                    JList<String> list = new JList<>(contacts.toArray(new String[0]));
+                    JScrollPane scrollPane = new JScrollPane(list);
+                    scrollPane.setPreferredSize(new Dimension(400, 300));
+                    JOptionPane.showMessageDialog(null, scrollPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No contacts found", "Search Results", JOptionPane.PLAIN_MESSAGE);
+                }
             }
+        }
         });
         panel.add(searchButton, c);
 
@@ -129,8 +156,9 @@ public class PhonebookGUI extends JFrame {
         importExportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] options = {"Import from CSV", "Export to CSV"};
-                int choice = JOptionPane.showOptionDialog(null, "Choose an option", "Import/Export", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                String[] options = { "Import from CSV", "Export to CSV" };
+                int choice = JOptionPane.showOptionDialog(null, "Choose an option", "Import/Export",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                 switch (choice) {
                     case 0:
                         // do something when "Import from CSV" is selected
@@ -144,7 +172,7 @@ public class PhonebookGUI extends JFrame {
             }
         });
         panel.add(importExportButton, c);
-        
+
         c.gridy = 7;
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new ActionListener() {
@@ -170,4 +198,3 @@ public class PhonebookGUI extends JFrame {
         });
     }
 }
-
