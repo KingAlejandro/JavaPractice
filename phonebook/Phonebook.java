@@ -75,20 +75,27 @@ public class Phonebook {
         }
     }
 
-    public void searchContacts(String query) {
+    public ArrayList<String> searchContacts(String query) {
         try {
             String searchSQL = "SELECT * FROM phonebook WHERE name LIKE ? or phoneNumber LIKE ?";
             PreparedStatement preparedStatement = connection.prepareStatement(searchSQL);
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<String> contacts = new ArrayList<String>();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String phoneNumber = resultSet.getString("phoneNumber");
-                System.out.println(name + ": " + phoneNumber);
+                contacts.add(name + ": " + phoneNumber);
+            }
+            if (contacts.size() == 0) {
+                return null;
+            } else {
+                return contacts;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 

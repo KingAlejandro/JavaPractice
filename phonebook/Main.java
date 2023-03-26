@@ -69,7 +69,12 @@ public class Main {
                             System.out.println("Enter a part of a name or part of a phone number to search for:");
                             String partialName = scanner.nextLine();
 
-                            phonebook.searchContacts(partialName);
+                            ArrayList<String> contacts = phonebook.searchContacts(partialName);
+                            if (contacts != null) {
+                                for (String contact : contacts) {
+                                    System.out.println(contact);
+                                }
+                            }
                             break;
                         default:
                             System.out.println("Invalid search method.");
