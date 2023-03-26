@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Phonebook phonebook = new Phonebook();
+        PhonebookGUI phonebookGUI = new PhonebookGUI(); 
+        phonebookGUI.setVisible(true);
         Scanner scanner = new Scanner(System.in);
         int choice;
 
