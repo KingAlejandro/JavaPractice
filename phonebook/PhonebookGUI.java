@@ -113,11 +113,8 @@ public class PhonebookGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<String> contacts = phonebook.displayAllContacts();
                 if (contacts != null) {
-                    JTextArea textArea = new JTextArea();
-                    for (String contact : contacts) {
-                        textArea.append(contact + "\n");
-                    }
-                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    JList<String> list = new JList<>(contacts.toArray(new String[0]));
+                    JScrollPane scrollPane = new JScrollPane(list);
                     scrollPane.setPreferredSize(new Dimension(400, 300));
                     JOptionPane.showMessageDialog(null, scrollPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
                 } else {
