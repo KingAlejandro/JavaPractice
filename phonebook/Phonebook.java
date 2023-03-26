@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
@@ -114,18 +115,25 @@ public class Phonebook {
         }
     }
 
-    public void displayAllContacts() {
+    public ArrayList<String> displayAllContacts() {
         try {
             String selectAllSQL = "SELECT * FROM phonebook";
             PreparedStatement preparedStatement = connection.prepareStatement(selectAllSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<String> results = new ArrayList<>();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String phoneNumber = resultSet.getString("phoneNumber");
-                System.out.println(name + ": " + phoneNumber);
+                results.add(name + ": " + phoneNumber);
+            }
+            if (results.isEmpty()) {
+                return null;
+            } else {
+                return results;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 

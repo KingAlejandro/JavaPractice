@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Phonebook phonebook = new Phonebook();
-        PhonebookGUI phonebookGUI = new PhonebookGUI(phonebook); 
+        PhonebookGUI phonebookGUI = new PhonebookGUI(phonebook);
         phonebookGUI.setVisible(true);
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -76,7 +77,12 @@ public class Main {
                     }
                     break;
                 case 5:
-                    phonebook.displayAllContacts();
+                    ArrayList<String> contacts = phonebook.displayAllContacts();
+                    if (contacts != null) {
+                        for (String contact : contacts) {
+                            System.out.println(contact);
+                        }
+                    }
                     break;
                 case 6:
                     System.out.println(
