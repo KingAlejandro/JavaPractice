@@ -28,22 +28,27 @@ public class PhonebookGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JTextField nameField = new JTextField(10);
                 JTextField phoneField = new JTextField(10);
+                JTextField emailField = new JTextField(10);
 
                 JPanel myPanel = new JPanel();
+                myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
                 myPanel.add(new JLabel("Name:"));
                 myPanel.add(nameField);
-                myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
                 myPanel.add(new JLabel("Phone Number:"));
                 myPanel.add(phoneField);
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Email:"));
+                myPanel.add(emailField);
 
                 int result = JOptionPane.showConfirmDialog(null, myPanel,
                         "Please Enter Name and Phone Number", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
                     String name = nameField.getText();
                     String phoneNumber = phoneField.getText();
-                    Contact contact = new Contact(name, phoneNumber);
+                    String email = emailField.getText();
+                    Contact contact = new Contact(name, phoneNumber, email);
                     phonebook.addEntry(contact);
-                    System.out.println(name + " has been added to the phonebook.");
                     JOptionPane.showMessageDialog(null, name + " has been added to the phonebook.");
 
                 }
@@ -53,51 +58,6 @@ public class PhonebookGUI extends JFrame {
         panel.add(addButton, c);
 
         c.gridy = 2;
-        JButton removeButton = new JButton("Remove");
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = JOptionPane.showInputDialog("Enter a name to remove from the phonebook:");
-
-                if (name != null && !name.isEmpty()) {
-                    // phonebook.deleteEntry(name);
-
-                    JOptionPane.showMessageDialog(null, name + " has been removed from the phonebook.");
-                    System.out.println(name + " has been removed from the phonebook.");
-
-                }
-            }
-        });
-        panel.add(removeButton, c);
-
-        c.gridy = 3;
-        JButton updateButton = new JButton("Update");
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JTextField nameField = new JTextField(10);
-                JTextField phoneNumberField = new JTextField(10);
-
-                JPanel myPanel = new JPanel();
-                myPanel.add(new JLabel("Name:"));
-                myPanel.add(nameField);
-                myPanel.add(Box.createHorizontalStrut(15)); // a spacer
-                myPanel.add(new JLabel("Phone Number:"));
-                myPanel.add(phoneNumberField);
-
-                int result = JOptionPane.showConfirmDialog(null, myPanel,
-                        "Please Enter Name and Phone Number", JOptionPane.OK_CANCEL_OPTION);
-                if (result == JOptionPane.OK_OPTION) {
-                    String name = nameField.getText();
-                    String phoneNumber = phoneNumberField.getText();
-                    // phonebook.updateEntry(name, phoneNumber);
-                    JOptionPane.showMessageDialog(null, name + "'s phone number has been updated in the phonebook.");
-                }
-            }
-        });
-        panel.add(updateButton, c);
-
-        c.gridy = 4;
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
             @Override
@@ -193,7 +153,7 @@ public class PhonebookGUI extends JFrame {
 
         panel.add(searchButton, c);
 
-        c.gridy = 5;
+        c.gridy = 3;
         JButton displayAllButton = new JButton("Display All");
         displayAllButton.addActionListener(new ActionListener() {
             @Override
@@ -268,7 +228,7 @@ public class PhonebookGUI extends JFrame {
         });
         panel.add(displayAllButton, c);
 
-        c.gridy = 6;
+        c.gridy = 4;
         JButton importExportButton = new JButton("Import/Export");
         importExportButton.addActionListener(new ActionListener() {
             @Override
@@ -300,7 +260,7 @@ public class PhonebookGUI extends JFrame {
         });
         panel.add(importExportButton, c);
 
-        c.gridy = 7;
+        c.gridy = 5;
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new ActionListener() {
             @Override
@@ -308,7 +268,7 @@ public class PhonebookGUI extends JFrame {
                 System.exit(0);
             }
         });
-        c.gridy = 8;
+        c.gridy = 6;
         panel.add(quitButton, c);
 
         add(panel);
