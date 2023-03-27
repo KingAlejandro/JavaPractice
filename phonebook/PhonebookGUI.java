@@ -90,7 +90,7 @@ public class PhonebookGUI extends JFrame {
                 if (result == JOptionPane.OK_OPTION) {
                     String name = nameField.getText();
                     String phoneNumber = phoneNumberField.getText();
-                    phonebook.updateEntry(name, phoneNumber);
+                    // phonebook.updateEntry(name, phoneNumber);
                     JOptionPane.showMessageDialog(null, name + "'s phone number has been updated in the phonebook.");
                 }
             }
@@ -156,10 +156,52 @@ public class PhonebookGUI extends JFrame {
                     list.setCellRenderer(new ContactListRenderer());
                     JScrollPane scrollPane = new JScrollPane(list);
                     scrollPane.setPreferredSize(new Dimension(400, 300));
-                    JOptionPane.showMessageDialog(null, scrollPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
+
+                    JButton editButton = new JButton("Edit Contact");
+                    editButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            Contact selectedContact = list.getSelectedValue();
+                            selectedContact.printContact();
+
+                            if (selectedContact == null) {
+                                JOptionPane.showMessageDialog(null, "Please select a contact to update",
+                                        "Update Contact", JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            JTextField nameField = new JTextField(selectedContact.getName());
+                            JTextField phoneNumberField = new JTextField(selectedContact.getPhoneNumber());
+                            JTextField emailField = new JTextField(selectedContact.getEmail());
+
+                            JPanel panel = new JPanel(new GridLayout(0, 1));
+                            panel.add(new JLabel("Name:"));
+                            panel.add(nameField);
+                            panel.add(new JLabel("Phone Number:"));
+                            panel.add(phoneNumberField);
+                            panel.add(new JLabel("Email:"));
+                            panel.add(emailField);
+
+                            int result = JOptionPane.showConfirmDialog(null, panel, "Update Contact",
+                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                            if (result == JOptionPane.OK_OPTION) {
+                                phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
+                                        emailField.getText());
+                                System.out.println(selectedContact.getUuid().toString() + nameField.getText() + phoneNumberField.getText() + emailField.getText());
+                                // Refresh the list to show the updated contact
+                                list.repaint();
+                            }
+                        }
+                    });
+
+                    JPanel buttonPanel = new JPanel(new BorderLayout());
+                    buttonPanel.add(editButton, BorderLayout.NORTH);
+                    JPanel contentPane = new JPanel(new BorderLayout());
+                    contentPane.add(scrollPane, BorderLayout.CENTER);
+                    contentPane.add(buttonPanel, BorderLayout.SOUTH);
+
+                    JOptionPane.showMessageDialog(null, contentPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "No contacts found", "All Contacts", JOptionPane.PLAIN_MESSAGE);
-
                 }
             }
         });
