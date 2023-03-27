@@ -6,6 +6,13 @@ public class Contact {
     private String phoneNumber;
     private String email;
 
+    public Contact(String uuidString, String name, String phoneNumber, String email) {
+        this.uuid = UUID.fromString(uuidString);
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
     public Contact(String name, String phoneNumber) {
         this.uuid = UUID.randomUUID();
         this.name = name;
