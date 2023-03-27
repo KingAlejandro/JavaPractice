@@ -168,31 +168,17 @@ public class PhonebookGUI extends JFrame {
                                         "Update Contact", JOptionPane.WARNING_MESSAGE);
                                 return;
                             }
-                            JTextField nameField = new JTextField(selectedContact.getName());
-                            JTextField phoneNumberField = new JTextField(selectedContact.getPhoneNumber());
-                            JTextField emailField = new JTextField(selectedContact.getEmail());
 
-                            JPanel panel = new JPanel(new GridLayout(0, 1));
-                            panel.add(new JLabel("Name:"));
-                            panel.add(nameField);
-                            panel.add(new JLabel("Phone Number:"));
-                            panel.add(phoneNumberField);
-                            panel.add(new JLabel("Email:"));
-                            panel.add(emailField);
+                            Contact updatedContact = editContact(phonebook, selectedContact);
 
-                            int result = JOptionPane.showConfirmDialog(null, panel, "Update Contact",
-                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                            if (result == JOptionPane.OK_OPTION) {
-                                phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
-                                        emailField.getText());
-                                // Refresh the list to show the updated contact
+                            if (updatedContact != null){
                                 int index = list.getSelectedIndex();
-                                Contact updatedContact = new Contact(selectedContact.getUuid().toString(),
-                                        nameField.getText(), phoneNumberField.getText(), emailField.getText());
                                 listModel.set(index, updatedContact);
                                 list.repaint();
+                                JOptionPane.showMessageDialog(null, "The contact has been updated");
+                                }
+
                             }
-                        }
                     });
 
                     JPanel buttonPanel = new JPanel(new BorderLayout());
@@ -254,6 +240,33 @@ public class PhonebookGUI extends JFrame {
 
         add(panel);
         setVisible(true);
+    }
+
+    public Contact editContact(Phonebook phonebook, Contact selectedContact) {
+        JTextField nameField = new JTextField(selectedContact.getName());
+                            JTextField phoneNumberField = new JTextField(selectedContact.getPhoneNumber());
+                            JTextField emailField = new JTextField(selectedContact.getEmail());
+
+                            JPanel panel = new JPanel(new GridLayout(0, 1));
+                            panel.add(new JLabel("Name:"));
+                            panel.add(nameField);
+                            panel.add(new JLabel("Phone Number:"));
+                            panel.add(phoneNumberField);
+                            panel.add(new JLabel("Email:"));
+                            panel.add(emailField);
+
+                            int result = JOptionPane.showConfirmDialog(null, panel, "Update Contact",
+                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                            if (result == JOptionPane.OK_OPTION) {
+                                phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
+                                        emailField.getText());
+                                return new Contact(selectedContact.getUuid().toString(),
+                                        nameField.getText(), phoneNumberField.getText(), emailField.getText());
+                            }
+                            else {
+                                return null;
+                            }
+
     }
 
     public class ContactListRenderer extends DefaultListCellRenderer {
