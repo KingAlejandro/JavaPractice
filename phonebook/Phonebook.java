@@ -35,10 +35,12 @@ public class Phonebook {
 
     public void addEntry(Contact contact) {
         try {
-            String addEntrySQL = "INSERT INTO phonebook (name, phoneNumber) VALUES (?, ?)";
+            String addEntrySQL = "INSERT INTO phonebook (id, name, phoneNumber, email) VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(addEntrySQL);
-            preparedStatement.setString(1, contact.getName());
-            preparedStatement.setString(2, contact.getPhoneNumber());
+            preparedStatement.setString(1, contact.getUuid().toString());
+            preparedStatement.setString(2, contact.getName());
+            preparedStatement.setString(3, contact.getPhoneNumber());
+            preparedStatement.setString(4, contact.getEmail());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
