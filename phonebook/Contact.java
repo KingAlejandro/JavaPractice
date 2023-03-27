@@ -1,18 +1,27 @@
+import java.util.UUID;
+
 public class Contact {
+    private UUID uuid;
     private String name;
     private String phoneNumber;
     private String email;
 
     public Contact(String name, String phoneNumber) {
+        this.uuid = UUID.randomUUID();
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = "";
     }
 
     public Contact(String name, String phoneNumber, String email) {
+        this.uuid = UUID.randomUUID();
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public String getName() {
