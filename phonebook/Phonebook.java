@@ -8,30 +8,47 @@ import java.io.BufferedReader;
 public class Phonebook {
     private Connection connection;
 
-    public Phonebook() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            String dbURL = "jdbc:sqlite:phonebook.sqlite";
-            connection = DriverManager.getConnection(dbURL);
-            if (connection != null) {
-                System.out.println("Connected to the database");
-                DatabaseMetaData dm = (DatabaseMetaData) connection.getMetaData();
-                System.out.println("Driver name: " + dm.getDriverName());
-                System.out.println("Driver version: " + dm.getDriverVersion());
-                System.out.println("Product name: " + dm.getDatabaseProductName());
-                System.out.println("Product version: " + dm.getDatabaseProductVersion());
+/**
+ * Constructor for the Phonebook class.
+ * Connects to the phonebook database and creates the phonebook table if it doesn't exist.
+ */
+public Phonebook() {
+    try {
+        // Load the SQLite JDBC driver
+        Class.forName("org.sqlite.JDBC");
+        
+        // URL of the phonebook database
+        String dbURL = "jdbc:sqlite:phonebook.sqlite";
+        
+        // Connect to the database
+        connection = DriverManager.getConnection(dbURL);
+        
+        if (connection != null) {
+            // Print information about the database connection
+            System.out.println("Connected to the database");
+            DatabaseMetaData dm = (DatabaseMetaData) connection.getMetaData();
+            System.out.println("Driver name: " + dm.getDriverName());
+            System.out.println("Driver version: " + dm.getDriverVersion());
+            System.out.println("Product name: " + dm.getDatabaseProductName());
+            System.out.println("Product version: " + dm.getDatabaseProductVersion());
 
-                String createTableSQL = "CREATE TABLE IF NOT EXISTS phonebook (id TEXT PRIMARY KEY, name TEXT, phoneNumber TEXT, email TEXT)";
-                PreparedStatement preparedStatement = connection.prepareStatement(createTableSQL);
-                preparedStatement.execute();
-
-            }
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            // SQL command to create the phonebook table if it doesn't exist
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS phonebook (id TEXT PRIMARY KEY, name TEXT, phoneNumber TEXT, email TEXT)";
+            
+            // Create a PreparedStatement to execute the SQL command
+            PreparedStatement preparedStatement = connection.prepareStatement(createTableSQL);
+            
+            // Execute the SQL command
+            preparedStatement.execute();
         }
+    } catch (ClassNotFoundException ex) {
+        // Print the stack trace if a ClassNotFoundException occurs
+        ex.printStackTrace();
+    } catch (SQLException ex) {
+        // Print the stack trace if an SQLException occurs
+        ex.printStackTrace();
     }
+}
 
 /**
  * Adds an entry to the phonebook database.
@@ -94,14 +111,31 @@ public void addEntry(Contact contact) {
         }
     }
 
+/**
+ * Searches for contacts in the phonebook database.
+ *
+ * @param query the search query
+ * @return an ArrayList of Contact objects that match the search query
+ */
 public ArrayList<Contact> searchContacts(String query) {
     try {
+        // SQL command to search for contacts in the phonebook table
         String searchSQL = "SELECT * FROM phonebook WHERE name LIKE ? OR phoneNumber LIKE ?";
+        
+        // Create a PreparedStatement to execute the SQL command
         PreparedStatement preparedStatement = connection.prepareStatement(searchSQL);
+        
+        // Set the values of the parameters to the search query
         preparedStatement.setString(1, "%" + query + "%");
         preparedStatement.setString(2, "%" + query + "%");
+        
+        // Execute the SQL command and get the results
         ResultSet resultSet = preparedStatement.executeQuery();
+        
+        // Create an ArrayList to store the contacts
         ArrayList<Contact> contacts = new ArrayList<Contact>();
+        
+        // Loop through the results and create Contact objects for each row
         while (resultSet.next()) {
             String id = resultSet.getString("id");
             String name = resultSet.getString("name");
@@ -109,12 +143,15 @@ public ArrayList<Contact> searchContacts(String query) {
             String email = resultSet.getString("email");
             contacts.add(new Contact(id, name, phoneNumber, email));
         }
+        
+        // Return the contacts or null if no contacts were found
         if (contacts.size() == 0) {
             return null;
         } else {
             return contacts;
         }
     } catch (SQLException e) {
+        // Print the stack trace if an SQLException occurs
         e.printStackTrace();
         return null;
     }
@@ -145,73 +182,126 @@ public void deleteEntry(Contact contact) {
     }
 }
 
-    public void updateEntry(Contact contact, String newName, String newPhoneNumber, String newEmail) {
-        try {
-            String updateEntrySQL = "UPDATE phonebook SET name = ?, phoneNumber = ?, email = ? WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(updateEntrySQL);
-            preparedStatement.setString(1, newName == null ? contact.getName() : newName);
-            preparedStatement.setString(2, newPhoneNumber == null ? contact.getPhoneNumber() : newPhoneNumber);
-            preparedStatement.setString(3, newEmail == null ? contact.getEmail() : newEmail);
-            preparedStatement.setString(4, contact.getUuid().toString());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+/**
+ * Updates an entry in the phonebook database.
+ *
+ * @param contact the contact to be updated
+ * @param newName the new name for the contact
+ * @param newPhoneNumber the new phone number for the contact
+ * @param newEmail the new email for the contact
+ */
+public void updateEntry(Contact contact, String newName, String newPhoneNumber, String newEmail) {
+    try {
+        // SQL command to update a row in the phonebook table
+        String updateEntrySQL = "UPDATE phonebook SET name = ?, phoneNumber = ?, email = ? WHERE id = ?";
+        
+        // Create a PreparedStatement to execute the SQL command
+        PreparedStatement preparedStatement = connection.prepareStatement(updateEntrySQL);
+        
+        // Set the values of the parameters to the new values or the current values if no new value is provided
+        preparedStatement.setString(1, newName == null ? contact.getName() : newName);
+        preparedStatement.setString(2, newPhoneNumber == null ? contact.getPhoneNumber() : newPhoneNumber);
+        preparedStatement.setString(3, newEmail == null ? contact.getEmail() : newEmail);
+        preparedStatement.setString(4, contact.getUuid().toString());
+        
+        // Execute the SQL command
+        preparedStatement.execute();
+    } catch (SQLException e) {
+        // Print the stack trace if an SQLException occurs
+        e.printStackTrace();
     }
+}
 
-    public ArrayList<Contact> displayAllContacts() {
-        try {
-            String selectAllSQL = "SELECT * FROM phonebook";
-            PreparedStatement preparedStatement = connection.prepareStatement(selectAllSQL);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<Contact> results = new ArrayList<>();
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String name = resultSet.getString("name");
-                String phoneNumber = resultSet.getString("phoneNumber");
-                String email = resultSet.getString("email");
-                results.add(new Contact(id, name, phoneNumber, email));
-            }
-            if (results.isEmpty()) {
-                return null;
-            } else {
-                return results;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+/**
+ * Displays all contacts in the phonebook database.
+ *
+ * @return an ArrayList of Contact objects representing all contacts in the phonebook
+ */
+public ArrayList<Contact> displayAllContacts() {
+    try {
+        // SQL command to select all rows from the phonebook table
+        String selectAllSQL = "SELECT * FROM phonebook";
+        
+        // Create a PreparedStatement to execute the SQL command
+        PreparedStatement preparedStatement = connection.prepareStatement(selectAllSQL);
+        
+        // Execute the SQL command and get the results
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        // Create an ArrayList to store the contacts
+        ArrayList<Contact> results = new ArrayList<>();
+        
+        // Loop through the results and create Contact objects for each row
+        while (resultSet.next()) {
+            String id = resultSet.getString("id");
+            String name = resultSet.getString("name");
+            String phoneNumber = resultSet.getString("phoneNumber");
+            String email = resultSet.getString("email");
+            results.add(new Contact(id, name, phoneNumber, email));
+        }
+        
+        // Return the contacts or null if no contacts were found
+        if (results.isEmpty()) {
             return null;
+        } else {
+            return results;
         }
+    } catch (SQLException e) {
+        // Print the stack trace if an SQLException occurs
+        e.printStackTrace();
+        return null;
     }
+}
 
 
-    public void exportToCsv(String fileName) {
-        try {
-            FileWriter writer = new FileWriter(fileName);
-
-            String selectAllSQL = "SELECT * FROM phonebook";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(selectAllSQL);
-
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            while (resultSet.next()) {
-                for (int i = 1; i <= columnCount; i++) {
-                    if (i > 1) {
-                        writer.append(",");
-                    }
-                    String columnValue = resultSet.getString(i);
-                    writer.append(columnValue);
+/**
+ * Exports the phonebook database to a CSV file.
+ *
+ * @param fileName the name of the CSV file
+ */
+public void exportToCsv(String fileName) {
+    try {
+        // Create a FileWriter to write to the CSV file
+        FileWriter writer = new FileWriter(fileName);
+        
+        // SQL command to select all rows from the phonebook table
+        String selectAllSQL = "SELECT * FROM phonebook";
+        
+        // Create a Statement to execute the SQL command
+        Statement statement = connection.createStatement();
+        
+        // Execute the SQL command and get the results
+        ResultSet resultSet = statement.executeQuery(selectAllSQL);
+        
+        // Get metadata about the results
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        
+        // Get the number of columns in the results
+        int columnCount = metaData.getColumnCount();
+        
+        // Loop through the results and write each row to the CSV file
+        while (resultSet.next()) {
+            for (int i = 1; i <= columnCount; i++) {
+                if (i > 1) {
+                    // Add a comma separator between values
+                    writer.append(",");
                 }
-                writer.append("\n");
+                // Get the value of the current column and write it to the CSV file
+                String columnValue = resultSet.getString(i);
+                writer.append(columnValue);
             }
-
-            writer.flush();
-            writer.close();
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
+            // Add a newline character after each row
+            writer.append("\n");
         }
+        
+        // Flush and close the FileWriter
+        writer.flush();
+        writer.close();
+    } catch (IOException | SQLException e) {
+        // Print the stack trace if an IOException or SQLException occurs
+        e.printStackTrace();
     }
+}
 
     public void importFromCsv(String fileName) {
         try {
