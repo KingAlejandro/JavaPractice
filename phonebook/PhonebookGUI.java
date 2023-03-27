@@ -162,7 +162,6 @@ public class PhonebookGUI extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             Contact selectedContact = list.getSelectedValue();
-                            selectedContact.printContact();
 
                             if (selectedContact == null) {
                                 JOptionPane.showMessageDialog(null, "Please select a contact to update",
@@ -186,8 +185,11 @@ public class PhonebookGUI extends JFrame {
                             if (result == JOptionPane.OK_OPTION) {
                                 phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
                                         emailField.getText());
-                                System.out.println(selectedContact.getUuid().toString() + nameField.getText() + phoneNumberField.getText() + emailField.getText());
                                 // Refresh the list to show the updated contact
+                                int index = list.getSelectedIndex();
+                                Contact updatedContact = new Contact(selectedContact.getUuid().toString(),
+                                        nameField.getText(), phoneNumberField.getText(), emailField.getText());
+                                listModel.set(index, updatedContact);
                                 list.repaint();
                             }
                         }
