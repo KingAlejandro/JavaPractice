@@ -130,7 +130,38 @@ public class PhonebookGUI extends JFrame {
                         list.setCellRenderer(new ContactListRenderer());
                         JScrollPane scrollPane = new JScrollPane(list);
                         scrollPane.setPreferredSize(new Dimension(400, 300));
-                        JOptionPane.showMessageDialog(null, scrollPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
+
+                        JButton editButton = new JButton("Edit Contact");
+                        editButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                Contact selectedContact = list.getSelectedValue();
+    
+                                if (selectedContact == null) {
+                                    JOptionPane.showMessageDialog(null, "Please select a contact to update",
+                                            "Update Contact", JOptionPane.WARNING_MESSAGE);
+                                    return;
+                                }
+    
+                                Contact updatedContact = editContact(phonebook, selectedContact);
+    
+                                if (updatedContact != null){
+                                    int index = list.getSelectedIndex();
+                                    listModel.set(index, updatedContact);
+                                    list.repaint();
+                                    JOptionPane.showMessageDialog(null, "The contact has been updated");
+                                    }
+    
+                                }
+                        });
+    
+                        JPanel buttonPanel = new JPanel(new BorderLayout());
+                        buttonPanel.add(editButton, BorderLayout.NORTH);
+                        JPanel contentPane = new JPanel(new BorderLayout());
+                        contentPane.add(scrollPane, BorderLayout.CENTER);
+                        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+
+                        JOptionPane.showMessageDialog(null, contentPane, "Search Results", JOptionPane.PLAIN_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(null, "No contacts found", "Search Results",
                                 JOptionPane.PLAIN_MESSAGE);
