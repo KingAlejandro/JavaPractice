@@ -90,10 +90,11 @@ public ArrayList<Contact> searchContacts(String query) {
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Contact> contacts = new ArrayList<Contact>();
         while (resultSet.next()) {
+            String id = resultSet.getString("id");
             String name = resultSet.getString("name");
             String phoneNumber = resultSet.getString("phoneNumber");
-            Contact contact = new Contact(name, phoneNumber);
-            contacts.add(contact);
+            String email = resultSet.getString("email");
+            contacts.add(new Contact(id, name, phoneNumber, email));
         }
         if (contacts.size() == 0) {
             return null;
@@ -118,12 +119,14 @@ public ArrayList<Contact> searchContacts(String query) {
         }
     }
 
-    public void updateEntry(String name, String newPhoneNumber) {
+    public void updateEntry(Contact contact, String newName, String newPhoneNumber, String newEmail) {
         try {
-            String updateEntrySQL = "UPDATE phonebook SET phoneNumber = ? WHERE name = ?";
+            String updateEntrySQL = "UPDATE phonebook SET name = ?, phoneNumber = ?, email = ? WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateEntrySQL);
-            preparedStatement.setString(1, newPhoneNumber);
-            preparedStatement.setString(2, name);
+            preparedStatement.setString(1, newName == null ? contact.getName() : newName);
+            preparedStatement.setString(2, newPhoneNumber == null ? contact.getPhoneNumber() : newPhoneNumber);
+            preparedStatement.setString(3, newEmail == null ? contact.getEmail() : newEmail);
+            preparedStatement.setString(4, contact.getUuid().toString());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,9 +140,11 @@ public ArrayList<Contact> searchContacts(String query) {
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<Contact> results = new ArrayList<>();
             while (resultSet.next()) {
+                String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
                 String phoneNumber = resultSet.getString("phoneNumber");
-                results.add(new Contact(name, phoneNumber));
+                String email = resultSet.getString("email");
+                results.add(new Contact(id, name, phoneNumber, email));
             }
             if (results.isEmpty()) {
                 return null;
