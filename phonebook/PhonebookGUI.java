@@ -136,27 +136,48 @@ public class PhonebookGUI extends JFrame {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 Contact selectedContact = list.getSelectedValue();
-    
+
                                 if (selectedContact == null) {
                                     JOptionPane.showMessageDialog(null, "Please select a contact to update",
                                             "Update Contact", JOptionPane.WARNING_MESSAGE);
                                     return;
                                 }
-    
+
                                 Contact updatedContact = editContact(phonebook, selectedContact);
-    
-                                if (updatedContact != null){
+
+                                if (updatedContact != null) {
                                     int index = list.getSelectedIndex();
                                     listModel.set(index, updatedContact);
                                     list.repaint();
                                     JOptionPane.showMessageDialog(null, "The contact has been updated");
-                                    }
-    
                                 }
+
+                            }
                         });
-    
-                        JPanel buttonPanel = new JPanel(new BorderLayout());
+
+                        JButton deleteButton = new JButton("Delete Contact");
+                        deleteButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                Contact selectedContact = list.getSelectedValue();
+
+                                if (selectedContact == null) {
+                                    JOptionPane.showMessageDialog(null, "Please select a contact to delete",
+                                            "Delete Contact", JOptionPane.WARNING_MESSAGE);
+                                    return;
+                                }
+                                phonebook.deleteEntry(selectedContact);
+                                int index = list.getSelectedIndex();
+                                listModel.remove(index);
+
+                                list.repaint();
+                                JOptionPane.showMessageDialog(null, "The contact has been deleted");
+                            }
+                        });
+
+                        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
                         buttonPanel.add(editButton, BorderLayout.NORTH);
+                        buttonPanel.add(deleteButton, BorderLayout.SOUTH);
                         JPanel contentPane = new JPanel(new BorderLayout());
                         contentPane.add(scrollPane, BorderLayout.CENTER);
                         contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -202,18 +223,39 @@ public class PhonebookGUI extends JFrame {
 
                             Contact updatedContact = editContact(phonebook, selectedContact);
 
-                            if (updatedContact != null){
+                            if (updatedContact != null) {
                                 int index = list.getSelectedIndex();
                                 listModel.set(index, updatedContact);
                                 list.repaint();
                                 JOptionPane.showMessageDialog(null, "The contact has been updated");
-                                }
-
                             }
+
+                        }
                     });
 
-                    JPanel buttonPanel = new JPanel(new BorderLayout());
+                    JButton deleteButton = new JButton("Delete Contact");
+                    deleteButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            Contact selectedContact = list.getSelectedValue();
+
+                            if (selectedContact == null) {
+                                JOptionPane.showMessageDialog(null, "Please select a contact to delete",
+                                        "Delete Contact", JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            phonebook.deleteEntry(selectedContact);
+                            int index = list.getSelectedIndex();
+                            listModel.remove(index);
+
+                            list.repaint();
+                            JOptionPane.showMessageDialog(null, "The contact has been deleted");
+                        }
+                    });
+
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
                     buttonPanel.add(editButton, BorderLayout.NORTH);
+                    buttonPanel.add(deleteButton, BorderLayout.SOUTH);
                     JPanel contentPane = new JPanel(new BorderLayout());
                     contentPane.add(scrollPane, BorderLayout.CENTER);
                     contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -275,28 +317,27 @@ public class PhonebookGUI extends JFrame {
 
     public Contact editContact(Phonebook phonebook, Contact selectedContact) {
         JTextField nameField = new JTextField(selectedContact.getName());
-                            JTextField phoneNumberField = new JTextField(selectedContact.getPhoneNumber());
-                            JTextField emailField = new JTextField(selectedContact.getEmail());
+        JTextField phoneNumberField = new JTextField(selectedContact.getPhoneNumber());
+        JTextField emailField = new JTextField(selectedContact.getEmail());
 
-                            JPanel panel = new JPanel(new GridLayout(0, 1));
-                            panel.add(new JLabel("Name:"));
-                            panel.add(nameField);
-                            panel.add(new JLabel("Phone Number:"));
-                            panel.add(phoneNumberField);
-                            panel.add(new JLabel("Email:"));
-                            panel.add(emailField);
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Name:"));
+        panel.add(nameField);
+        panel.add(new JLabel("Phone Number:"));
+        panel.add(phoneNumberField);
+        panel.add(new JLabel("Email:"));
+        panel.add(emailField);
 
-                            int result = JOptionPane.showConfirmDialog(null, panel, "Update Contact",
-                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                            if (result == JOptionPane.OK_OPTION) {
-                                phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
-                                        emailField.getText());
-                                return new Contact(selectedContact.getUuid().toString(),
-                                        nameField.getText(), phoneNumberField.getText(), emailField.getText());
-                            }
-                            else {
-                                return null;
-                            }
+        int result = JOptionPane.showConfirmDialog(null, panel, "Update Contact",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            phonebook.updateEntry(selectedContact, nameField.getText(), phoneNumberField.getText(),
+                    emailField.getText());
+            return new Contact(selectedContact.getUuid().toString(),
+                    nameField.getText(), phoneNumberField.getText(), emailField.getText());
+        } else {
+            return null;
+        }
 
     }
 

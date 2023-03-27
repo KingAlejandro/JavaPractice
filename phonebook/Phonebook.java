@@ -166,7 +166,7 @@ public ArrayList<Contact> searchContacts(String query) {
 public void deleteEntry(Contact contact) {
     try {
         // SQL command to delete a row from the phonebook table
-        String deleteEntrySQL = "DELETE FROM phonebook WHERE uuid = ?";
+        String deleteEntrySQL = "DELETE FROM phonebook WHERE id = ?";
         
         // Create a PreparedStatement to execute the SQL command
         PreparedStatement preparedStatement = connection.prepareStatement(deleteEntrySQL);
