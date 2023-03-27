@@ -21,7 +21,7 @@ public class Phonebook {
                 System.out.println("Product name: " + dm.getDatabaseProductName());
                 System.out.println("Product version: " + dm.getDatabaseProductVersion());
 
-                String createTableSQL = "CREATE TABLE IF NOT EXISTS phonebook (name TEXT, phoneNumber TEXT)";
+                String createTableSQL = "CREATE TABLE IF NOT EXISTS phonebook (id TEXT PRIMARY KEY, name TEXT, phoneNumber TEXT, email TEXT)";
                 PreparedStatement preparedStatement = connection.prepareStatement(createTableSQL);
                 preparedStatement.execute();
 
