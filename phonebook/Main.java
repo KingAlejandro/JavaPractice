@@ -31,7 +31,7 @@ public class Main {
                     System.out.println("Enter a name to remove from the phonebook:");
                     name = scanner.nextLine();
                     
-                    phonebook.deleteEntry(name);
+                    // phonebook.deleteEntry(name);
 
                     System.out.println(name + " has been removed from the phonebook.");
                     break;
@@ -42,7 +42,7 @@ public class Main {
                     System.out.println("Enter a new phone number for " + name + ":");
                     phoneNumber = scanner.nextLine();
 
-                    phonebook.updateEntry(name, phoneNumber);
+                    // phonebook.updateEntry(name, phoneNumber);
 
                     System.out.println(name + "'s phone number has been updated in the phonebook.");
                     break;

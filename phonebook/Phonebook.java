@@ -33,19 +33,32 @@ public class Phonebook {
         }
     }
 
-    public void addEntry(Contact contact) {
-        try {
-            String addEntrySQL = "INSERT INTO phonebook (id, name, phoneNumber, email) VALUES (?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(addEntrySQL);
-            preparedStatement.setString(1, contact.getUuid().toString());
-            preparedStatement.setString(2, contact.getName());
-            preparedStatement.setString(3, contact.getPhoneNumber());
-            preparedStatement.setString(4, contact.getEmail());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+/**
+ * Adds an entry to the phonebook database.
+ *
+ * @param contact the contact to be added
+ */
+public void addEntry(Contact contact) {
+    try {
+        // SQL command to insert a row into the phonebook table
+        String addEntrySQL = "INSERT INTO phonebook (id, name, phoneNumber, email) VALUES (?, ?, ?, ?)";
+        
+        // Create a PreparedStatement to execute the SQL command
+        PreparedStatement preparedStatement = connection.prepareStatement(addEntrySQL);
+        
+        // Set the values of the parameters to the corresponding values of the contact
+        preparedStatement.setString(1, contact.getUuid().toString());
+        preparedStatement.setString(2, contact.getName());
+        preparedStatement.setString(3, contact.getPhoneNumber());
+        preparedStatement.setString(4, contact.getEmail());
+        
+        // Execute the SQL command
+        preparedStatement.execute();
+    } catch (SQLException e) {
+        // Print the stack trace if an SQLException occurs
+        e.printStackTrace();
     }
+}
 
     public String getPhoneNumber(String name) {
         try {
@@ -108,16 +121,29 @@ public ArrayList<Contact> searchContacts(String query) {
 }
 
 
-    public void deleteEntry(String name) {
-        try {
-            String deleteEntrySQL = "DELETE FROM phonebook WHERE name = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteEntrySQL);
-            preparedStatement.setString(1, name);
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+/**
+ * Deletes an entry from the phonebook database.
+ *
+ * @param contact the contact to be deleted
+ */
+public void deleteEntry(Contact contact) {
+    try {
+        // SQL command to delete a row from the phonebook table
+        String deleteEntrySQL = "DELETE FROM phonebook WHERE uuid = ?";
+        
+        // Create a PreparedStatement to execute the SQL command
+        PreparedStatement preparedStatement = connection.prepareStatement(deleteEntrySQL);
+        
+        // Set the value of the first parameter to the uuid of the contact
+        preparedStatement.setString(1, contact.getUuid().toString());
+        
+        // Execute the SQL command
+        preparedStatement.execute();
+    } catch (SQLException e) {
+        // Print the stack trace if an SQLException occurs
+        e.printStackTrace();
     }
+}
 
     public void updateEntry(Contact contact, String newName, String newPhoneNumber, String newEmail) {
         try {
@@ -168,15 +194,6 @@ public ArrayList<Contact> searchContacts(String query) {
 
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-
-            // for (int i = 1; i <= columnCount; i++) {
-            //     if (i > 1) {
-            //         writer.append(",");
-            //     }
-            //     String columnName = metaData.getColumnLabel(i);
-            //     writer.append(columnName);
-            // }
-            // writer.append("\n");
 
             while (resultSet.next()) {
                 for (int i = 1; i <= columnCount; i++) {

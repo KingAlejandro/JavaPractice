@@ -60,7 +60,7 @@ public class PhonebookGUI extends JFrame {
                 String name = JOptionPane.showInputDialog("Enter a name to remove from the phonebook:");
 
                 if (name != null && !name.isEmpty()) {
-                    phonebook.deleteEntry(name);
+                    // phonebook.deleteEntry(name);
 
                     JOptionPane.showMessageDialog(null, name + " has been removed from the phonebook.");
                     System.out.println(name + " has been removed from the phonebook.");
