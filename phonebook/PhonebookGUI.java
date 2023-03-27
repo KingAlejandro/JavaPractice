@@ -5,9 +5,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class PhonebookGUI extends JFrame {
-    private Phonebook phonebook;
+    private final Phonebook phonebook;
 
-    public PhonebookGUI(Phonebook phonebook) {
+    public PhonebookGUI(final Phonebook phonebook) {
+        this.phonebook = phonebook; // initialize the phonebook field
         setTitle("Phonebook");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
