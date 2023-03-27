@@ -198,19 +198,36 @@ public ArrayList<Contact> searchContacts(String query) {
 
     public void importFromCsv(String fileName) {
         try {
+            // Create a BufferedReader to read from the specified file
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line;
     
+            // Read each line of the file
             while ((line = reader.readLine()) != null) {
+                // Split the line into values using comma as the delimiter
                 String[] values = line.split(",");
-                String name = values[0];
-                String phoneNumber = values[1];
-                Contact contact  = new Contact(name, phoneNumber);
-                addEntry(contact);
+                // Check the number of values in the line
+                if (values.length == 4) {
+                    // If there are 4 values, parse the id and call updateContact
+                    String id = values[0];
+                    String name = values[1];
+                    String phoneNumber = values[2];
+                    String email = values[3];
+                    updateEntry(new Contact(id, name, phoneNumber, email), name, phoneNumber, email);
+                } else if (values.length == 3) {
+                    // If there are 3 values, create a new Contact and call addEntry
+                    String name = values[0];
+                    String phoneNumber = values[1];
+                    String email = values[2];
+                    Contact contact = new Contact(name, phoneNumber, email);
+                    addEntry(contact);
+                }
             }
     
+            // Close the reader
             reader.close();
         } catch (IOException e) {
+            // Print any IOExceptions that occur
             e.printStackTrace();
         }
     }
