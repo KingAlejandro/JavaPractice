@@ -1,9 +1,10 @@
 package org.JavaPractice;
 
+import java.util.UUID;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
 
 
@@ -12,6 +13,29 @@ public class Users {
 
     public Users(Connection connection) {
         this.connection = connection;
+    }
+
+    public User login(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String storedHash = rs.getString("password");
+                if (BCrypt.checkpw(password, storedHash)) {
+                    String uuid = rs.getString("uuid");
+                    String name = rs.getString("name");
+                    double balance = rs.getDouble("balance");
+                    return new User(uuid, name, email, balance);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
     }
 
     public void registerUser(String name, String email, String password, double balance) {
