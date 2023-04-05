@@ -1,21 +1,12 @@
 package org.JavaPractice;
 
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
         DatabaseConnection connection = new DatabaseConnection("jdbc:sqlite:supermarket.sqlite");
         Users users = new Users (connection.getConnection());
-        User activeUser = null;
-
-//        users.registerUser("Alex", "safd@gg.com", "rahim", 0);
-        activeUser = users.login("safd@gg.com", "rahim");
-
-        GUI gui = new GUI();
-        gui.setVisible(true);
-
-        System.out.println(activeUser.getUuid());
-        activeUser.setBalance(25);
-        users.updateUser(activeUser);
+        new GUI(users).setVisible(true);
     }
 }
 
