@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 public class GUI extends JFrame {
     private Users users;
     private User activeUser = null;
+
     public GUI(Users users) {
         this.users = users;
 
@@ -24,16 +25,39 @@ public class GUI extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        if (activeUser == null) {
+
             JButton registerButton = new JButton("Register");
             panel.add(registerButton, gbc);
-        }
+            System.out.println("ActiveUser is null");
+            registerButton.setVisible(true);
+            panel.add(registerButton, gbc);
 
-        if (activeUser == null) {
             gbc.gridy++;
             JButton loginButton = new JButton("Log In");
+            loginButton.setVisible(true);
             panel.add(loginButton, gbc);
 
+            gbc.gridy++;
+            JButton logoutButton = new JButton("Log Out");
+            logoutButton.setVisible(false);
+            panel.add(logoutButton, gbc);
+
+            gbc.gridy++;
+            JButton quitButton = new JButton("Quit");
+            quitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Exit the application
+                    System.exit(0);
+                }
+            });
+            quitButton.setVisible(true);
+            panel.add(quitButton, gbc);
+
+
+
+            add(panel);
+        if (activeUser == null) {
             loginButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -55,31 +79,27 @@ public class GUI extends JFrame {
                         String email = emailField.getText();
                         String password = passwordField.getText();
 
-                        JOptionPane.showMessageDialog(null, "You are now logged in as " + email);
+                        User loginResult = users.login(email,password);
+
+                        if (loginResult != null) {
+                            activeUser = loginResult;
+                            JOptionPane.showMessageDialog(null, "You are now logged in as " + email);
+                            panel.revalidate();
+                            panel.repaint();
+                            loginButton.setVisible(false);
+                            registerButton.setVisible(false);
+                            logoutButton.setVisible(true);
+                            quitButton.setVisible(true);
+                            System.out.println(activeUser.getUuid());
+                        } else {
+                            // Login failed
+                            JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
 
                     }
                 };
             });
         }
 
-        if (activeUser != null) {
-            gbc.gridy++;
-            JButton logoutButton = new JButton("Log Out");
-            panel.add(logoutButton, gbc);
-        }
-
-        gbc.gridy++;
-        JButton quitButton = new JButton("Quit");
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Exit the application
-                System.exit(0);
-            }
-        });
-        panel.add(quitButton, gbc);
-
-        add(panel);
     }
-
 }
