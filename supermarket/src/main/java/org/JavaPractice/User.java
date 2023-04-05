@@ -1,7 +1,5 @@
 package org.JavaPractice;
 
-import java.util.UUID;
-
 public class User {
     private String uuid;
     private String name;

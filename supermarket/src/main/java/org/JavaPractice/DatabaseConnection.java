@@ -30,7 +30,7 @@ public class DatabaseConnection {
 
                 // Execute the SQL command
                 preparedStatement.execute();
-
+                
                 // SQL command to create the products table if it doesn't exist
                 String createProductsTableSQL = "CREATE TABLE IF NOT EXISTS products (productID TEXT PRIMARY KEY, name TEXT, price REAL, weight REAL, quantity INTEGER)";
 
