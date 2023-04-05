@@ -26,36 +26,41 @@ public class GUI extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
 
 
-            JButton registerButton = new JButton("Register");
-            panel.add(registerButton, gbc);
-            System.out.println("ActiveUser is null");
-            registerButton.setVisible(true);
-            panel.add(registerButton, gbc);
+        JButton registerButton = new JButton("Register");
+        panel.add(registerButton, gbc);
+        System.out.println("ActiveUser is null");
+        registerButton.setVisible(true);
+        panel.add(registerButton, gbc);
 
-            gbc.gridy++;
-            JButton loginButton = new JButton("Log In");
-            loginButton.setVisible(true);
-            panel.add(loginButton, gbc);
+        gbc.gridy++;
+        JButton loginButton = new JButton("Log In");
+        loginButton.setVisible(true);
+        panel.add(loginButton, gbc);
 
-            gbc.gridy++;
-            JButton logoutButton = new JButton("Log Out");
-            logoutButton.setVisible(false);
-            panel.add(logoutButton, gbc);
+        gbc.gridy++;
+        JButton updateBalanceButton = new JButton("Update Balance");
+        updateBalanceButton.setVisible(false);
+        panel.add(updateBalanceButton, gbc);
 
-            gbc.gridy++;
-            JButton quitButton = new JButton("Quit");
-            quitButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Exit the application
-                    System.exit(0);
-                }
-            });
-            quitButton.setVisible(true);
-            panel.add(quitButton, gbc);
+        gbc.gridy++;
+        JButton logoutButton = new JButton("Log Out");
+        logoutButton.setVisible(false);
+        panel.add(logoutButton, gbc);
+
+        gbc.gridy++;
+        JButton quitButton = new JButton("Quit");
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Exit the application
+                System.exit(0);
+            }
+        });
+        quitButton.setVisible(true);
+        panel.add(quitButton, gbc);
 
 
-            add(panel);
+        add(panel);
             loginButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -86,6 +91,8 @@ public class GUI extends JFrame {
                             registerButton.setVisible(false);
                             logoutButton.setVisible(true);
                             quitButton.setVisible(true);
+                            updateBalanceButton.setVisible(true);
+
                         } else {
                             // Login failed
                             JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
@@ -147,6 +154,35 @@ public class GUI extends JFrame {
                 registerButton.setVisible(true);
                 logoutButton.setVisible(false);
                 quitButton.setVisible(true);
+                updateBalanceButton.setVisible(false);
+            }
+        });
+
+        updateBalanceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTextField balanceField = new JTextField(10);
+
+                JPanel myPanel = new JPanel();
+                myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
+                myPanel.add(new JLabel("Balance:"));
+                myPanel.add(balanceField);
+
+                int result = JOptionPane.showOptionDialog(null, myPanel,
+                        "Update Balance", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                        null, new String[]{"Update", "Cancel"}, null);
+                if (result == JOptionPane.YES_OPTION) {
+                    String balanceString = balanceField.getText();
+
+                    try {
+                        double balance = Double.parseDouble(balanceString);
+                        activeUser.setBalance(balance);
+                        users.updateUser(activeUser);
+                        JOptionPane.showMessageDialog(null, "Balance updated successfully");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Invalid balance value", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         });
 
