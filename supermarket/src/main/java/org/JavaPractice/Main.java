@@ -4,9 +4,13 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
         DatabaseConnection connection = new DatabaseConnection("jdbc:sqlite:supermarket.sqlite");
+        Users users = new Users (connection.getConnection());
 
-
-
+        users.registerUser("Alex", "safd@gg.com", "rahim", 0);
+        User activeUser = users.login("safd@gg.com", "rahim");
+        System.out.println(activeUser.getUuid());
+        activeUser.setBalance(25);
+        users.updateUser(activeUser);
     }
 }
 

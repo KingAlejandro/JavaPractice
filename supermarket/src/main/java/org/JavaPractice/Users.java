@@ -25,7 +25,7 @@ public class Users {
             if (rs.next()) {
                 String storedHash = rs.getString("password");
                 if (BCrypt.checkpw(password, storedHash)) {
-                    String uuid = rs.getString("uuid");
+                    String uuid = rs.getString("userID");
                     String name = rs.getString("name");
                     double balance = rs.getDouble("balance");
                     return new User(uuid, name, email, balance);
@@ -42,7 +42,7 @@ public class Users {
         String uuid = UUID.randomUUID().toString();
         String hashedPassword = hashPassword(password);
 
-        String sql = "INSERT INTO users(uuid,name,email,password,balance) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO users(userID,name,email,password,balance) VALUES(?,?,?,?,?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, uuid);
@@ -55,9 +55,9 @@ public class Users {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void updateUser(User user) {
-        String sql = "UPDATE users SET balance = ? WHERE uuid = ?";
+        String sql = "UPDATE users SET balance = ? WHERE userID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setDouble(1, user.getBalance());
