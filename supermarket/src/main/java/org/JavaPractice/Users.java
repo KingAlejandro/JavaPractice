@@ -55,6 +55,18 @@ public class Users {
             System.out.println(e.getMessage());
         }
     }
+    
+    public void updateUser(User user) {
+        String sql = "UPDATE users SET balance = ? WHERE uuid = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setDouble(1, user.getBalance());
+            pstmt.setString(2, user.getUuid());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
