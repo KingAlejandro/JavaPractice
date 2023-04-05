@@ -55,9 +55,7 @@ public class GUI extends JFrame {
             panel.add(quitButton, gbc);
 
 
-
             add(panel);
-        if (activeUser == null) {
             loginButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -84,13 +82,10 @@ public class GUI extends JFrame {
                         if (loginResult != null) {
                             activeUser = loginResult;
                             JOptionPane.showMessageDialog(null, "You are now logged in as " + email);
-                            panel.revalidate();
-                            panel.repaint();
                             loginButton.setVisible(false);
                             registerButton.setVisible(false);
                             logoutButton.setVisible(true);
                             quitButton.setVisible(true);
-                            System.out.println(activeUser.getUuid());
                         } else {
                             // Login failed
                             JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
@@ -99,7 +94,49 @@ public class GUI extends JFrame {
                     }
                 };
             });
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create text fields for name, email, and password
+                JTextField nameField = new JTextField(10);
+                JTextField emailField = new JTextField(10);
+                JTextField passwordField = new JTextField(10);
+
+                // Create panel with labeled text fields
+                JPanel myPanel = new JPanel();
+                myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
+                myPanel.add(new JLabel("Name:"));
+                myPanel.add(nameField);
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Email:"));
+                myPanel.add(emailField);
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Password:"));
+                myPanel.add(passwordField);
+
+                // Show panel in a dialog box
+                int result = JOptionPane.showOptionDialog(null, myPanel,
+                        "Register", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                        null, new String[]{"Register", "Cancel"}, null);
+                if (result == JOptionPane.YES_OPTION) {
+                    // Get name, email, and password values
+                    String name = nameField.getText();
+                    String email = emailField.getText();
+                    String password = passwordField.getText();
+
+                    // Attempt to register user
+                    boolean registerResult = users.registerUser(name, email, password, 0.0);
+
+                    if (registerResult) {
+                        JOptionPane.showMessageDialog(null, "User registered successfully");
+                    } else {
+                        // Registration failed
+                        JOptionPane.showMessageDialog(null, "User with that email already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            };
+        });
         }
 
-    }
 }

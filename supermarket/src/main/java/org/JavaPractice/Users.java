@@ -38,7 +38,7 @@ public class Users {
         return null;
     }
 
-    public void registerUser(String name, String email, String password, double balance) {
+    public boolean registerUser(String name, String email, String password, double balance) {
         String uuid = UUID.randomUUID().toString();
         String hashedPassword = hashPassword(password);
 
@@ -51,9 +51,11 @@ public class Users {
             pstmt.setString(4, hashedPassword);
             pstmt.setDouble(5, balance);
             pstmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return false;
     }
 
     public void updateUser(User user) {
