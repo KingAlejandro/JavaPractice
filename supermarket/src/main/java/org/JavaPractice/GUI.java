@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
+    private User activeUser = null;
     public GUI() {
+
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
@@ -27,9 +29,11 @@ public class GUI extends JFrame {
         JButton loginButton = new JButton("Log In");
         panel.add(loginButton, gbc);
 
-        gbc.gridy++;
-        JButton logoutButton = new JButton("Log Out");
-        panel.add(logoutButton, gbc);
+        if (activeUser != null) {
+            gbc.gridy++;
+            JButton logoutButton = new JButton("Log Out");
+            panel.add(logoutButton, gbc);
+        }
 
         add(panel);
     }
