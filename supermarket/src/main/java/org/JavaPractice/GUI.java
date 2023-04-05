@@ -137,6 +137,19 @@ public class GUI extends JFrame {
                 }
             };
         });
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                activeUser = null;
+                JOptionPane.showMessageDialog(null, "You have logged out");
+                loginButton.setVisible(true);
+                registerButton.setVisible(true);
+                logoutButton.setVisible(false);
+                quitButton.setVisible(true);
+            }
+        });
+
         }
 
 }
