@@ -22,18 +22,33 @@ public class GUI extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        JButton registerButton = new JButton("Register");
-        panel.add(registerButton, gbc);
+        if (activeUser == null) {
+            JButton registerButton = new JButton("Register");
+            panel.add(registerButton, gbc);
+        }
 
-        gbc.gridy++;
-        JButton loginButton = new JButton("Log In");
-        panel.add(loginButton, gbc);
+        if (activeUser == null) {
+            gbc.gridy++;
+            JButton loginButton = new JButton("Log In");
+            panel.add(loginButton, gbc);
+        }
 
         if (activeUser != null) {
             gbc.gridy++;
             JButton logoutButton = new JButton("Log Out");
             panel.add(logoutButton, gbc);
         }
+
+        gbc.gridy++;
+        JButton quitButton = new JButton("Quit");
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Exit the application
+                System.exit(0);
+            }
+        });
+        panel.add(quitButton, gbc);
 
         add(panel);
     }
