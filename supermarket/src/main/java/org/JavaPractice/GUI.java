@@ -264,12 +264,10 @@ public class GUI extends JFrame {
 // Add an action listener to the sales button
         salesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Create a panel to hold the sales buttons
-                JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
-
-                // Create the buttons and add them to the panel
-                JButton viewAllButton = new JButton("View All Sales");
-                JButton viewPeriodButton = new JButton("View Sales within a specific period");
+                // Create a panel to hold the buttons
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                JButton viewAllButton = new JButton("View all sales");
+                JButton viewPeriodButton = new JButton("View sales within a period");
                 buttonPanel.add(viewAllButton);
                 buttonPanel.add(viewPeriodButton);
 
@@ -277,6 +275,7 @@ public class GUI extends JFrame {
                 viewAllButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // Get all sales from the database
+                        JOptionPane.getRootFrame().dispose();
                         ArrayList<Sale> saleList = null;
                         try {
                             saleList = sales.getAllSales();
@@ -347,6 +346,7 @@ public class GUI extends JFrame {
 
                 viewPeriodButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                        JOptionPane.getRootFrame().dispose();
                         // Create a panel to hold the form fields
                         JPanel formPanel = new JPanel(new GridLayout(0, 2));
 
