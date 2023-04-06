@@ -98,12 +98,57 @@ public class GUI extends JFrame {
                     }
                 });
 
+                    JButton addProductButton = new JButton("Add Product");
+                    addProductButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            // Create a JPanel to hold the form fields
+                            JPanel formPanel = new JPanel(new GridLayout(0, 2));
+
+                            // Create the form fields and add them to the form panel
+                            JLabel nameLabel = new JLabel("Product Name:");
+                            JTextField nameField = new JTextField();
+                            JLabel priceLabel = new JLabel("Price:");
+                            JTextField priceField = new JTextField();
+                            JLabel quantityLabel = new JLabel("Quantity:");
+                            JTextField quantityField = new JTextField();
+                            JLabel weightLabel = new JLabel("Weight:");
+                            JTextField weightField = new JTextField();
+                            formPanel.add(nameLabel);
+                            formPanel.add(nameField);
+                            formPanel.add(priceLabel);
+                            formPanel.add(priceField);
+                            formPanel.add(quantityLabel);
+                            formPanel.add(quantityField);
+                            formPanel.add(weightLabel);
+                            formPanel.add(weightField);
+
+                            // Show the form panel in a dialog box
+                            int result = JOptionPane.showConfirmDialog(null, formPanel, "Add Product", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                            // If the user clicked OK, create a new Product object and add it to the database
+                            if (result == JOptionPane.OK_OPTION) {
+                                // Get the values from the form fields
+                                String name = nameField.getText();
+                                double price = Double.parseDouble(priceField.getText());
+                                int quantity = Integer.parseInt(quantityField.getText());
+                                double weight = Double.parseDouble(weightField.getText());
+
+                                try {
+                                    products.addProduct(name, price, weight, quantity);
+                                } catch (SQLException ex) {
+                                    JOptionPane.showMessageDialog(null, "Couldn't add product", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        }
+                    });
+
                 // Create a JPanel to hold the JList and buttons
                     // Add the buttons to a panel and create a content pane with the list and the
                     // button panel
                     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
                     buttonPanel.add(editButton, BorderLayout.NORTH);
                     buttonPanel.add(buyButton, BorderLayout.SOUTH);
+                    buttonPanel.add(addProductButton, BorderLayout.SOUTH);
                     JPanel contentPane = new JPanel(new BorderLayout());
                     contentPane.add(scrollPane, BorderLayout.CENTER);
                     contentPane.add(buttonPanel, BorderLayout.SOUTH);
