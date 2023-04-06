@@ -6,7 +6,10 @@ public class Main {
         System.out.println("Hello world!");
         DatabaseConnection connection = new DatabaseConnection("jdbc:sqlite:supermarket.sqlite");
         Users users = new Users (connection.getConnection());
-        new GUI(users).setVisible(true);
+        Products products = new Products (connection.getConnection());
+        Sales sales = new Sales (connection.getConnection());
+
+        new GUI(users, products, sales).setVisible(true);
     }
 }
 

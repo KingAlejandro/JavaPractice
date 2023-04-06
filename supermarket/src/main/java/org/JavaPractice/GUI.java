@@ -4,13 +4,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 public class GUI extends JFrame {
     private Users users;
+    private Products products;
+    private Sales sales;
     private User activeUser = null;
 
-    public GUI(Users users) {
+    public GUI(Users users, Products products, Sales sales) {
         this.users = users;
+        this.products = products;
+        this.sales = sales;
 
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,6 +50,59 @@ public class GUI extends JFrame {
         JButton updateBalanceButton = new JButton("Update Balance");
         updateBalanceButton.setVisible(false);
         panel.add(updateBalanceButton, gbc);
+
+        JButton productButton = new JButton("Product");
+        productButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame productFrame = new JFrame("Product List");
+                productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                // Get all products from the database
+                List<Product> productList = null;
+                    try {
+                        productList = products.getAllProducts();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                // Create a JList with custom ListRenderer
+                JList<Product> productJList = new JList<>(productList.toArray(new Product[productList.size()]));
+                productJList.setCellRenderer(new ProductListRenderer());
+
+                // Create Buy and Edit buttons
+                JButton buyButton = new JButton("Buy");
+                JButton editButton = new JButton("Edit");
+
+                // Add action listeners to Buy and Edit buttons
+                buyButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Handle Buy button click
+                        // ...
+                    }
+                });
+                editButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Handle Edit button click
+                        // ...
+                    }
+                });
+
+                // Create a JPanel to hold the JList and buttons
+                JPanel productPanel = new JPanel();
+                productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.PAGE_AXIS));
+                productPanel.add(new JScrollPane(productJList));
+                productPanel.add(buyButton);
+                productPanel.add(editButton);
+
+                // Add the JPanel to the JFrame and show the window
+                productFrame.getContentPane().add(productPanel);
+                productFrame.pack();
+                productFrame.setVisible(true);
+            }
+        });
+
+// Add the Product button to the JFrame menu
+        panel.add(productButton);
 
         gbc.gridy++;
         JButton logoutButton = new JButton("Log Out");
@@ -187,5 +249,30 @@ public class GUI extends JFrame {
         });
 
         }
+
+    public class ProductListRenderer extends JLabel implements ListCellRenderer<Product> {
+        private static final Color HIGHLIGHT_COLOR = new Color(0, 0, 128);
+
+        public ProductListRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Product> list, Product value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
+            setText(value.getName() + " - $" + value.getPrice() + " - Quantity: " + value.getQuantity());
+
+            if (isSelected) {
+                setBackground(HIGHLIGHT_COLOR);
+                setForeground(Color.white);
+            } else {
+                setBackground(Color.white);
+                setForeground(Color.black);
+            }
+
+            return this;
+        }
+    }
+
 
 }
