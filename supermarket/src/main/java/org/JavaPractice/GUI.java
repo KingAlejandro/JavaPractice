@@ -51,6 +51,7 @@ public class GUI extends JFrame {
 
         gbc.gridy++;
         JButton productButton = new JButton("Product");
+        productButton.setVisible(false);
         productButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -250,7 +251,7 @@ public class GUI extends JFrame {
                     contentPane.add(scrollPane, BorderLayout.CENTER);
                     contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
-                    JOptionPane.showMessageDialog(null, contentPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, contentPane, "All Products", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -260,6 +261,7 @@ public class GUI extends JFrame {
         // Create a button to show the sales panel
         gbc.gridy++;
         JButton salesButton = new JButton("Sales");
+        salesButton.setVisible(false);
 
 // Add an action listener to the sales button
         salesButton.addActionListener(new ActionListener() {
@@ -495,6 +497,9 @@ public class GUI extends JFrame {
                             logoutButton.setVisible(true);
                             quitButton.setVisible(true);
                             updateBalanceButton.setVisible(true);
+                            productButton.setVisible(true);
+                            salesButton.setVisible(true);
+
 
                         } else {
                             // Login failed
@@ -558,6 +563,8 @@ public class GUI extends JFrame {
                 logoutButton.setVisible(false);
                 quitButton.setVisible(true);
                 updateBalanceButton.setVisible(false);
+                productButton.setVisible(false);
+                salesButton.setVisible(false);
             }
         });
 
