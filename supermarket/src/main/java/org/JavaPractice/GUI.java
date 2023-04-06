@@ -113,6 +113,9 @@ public class GUI extends JFrame {
                                 } else if (quantity > selectedProduct.getQuantity()) {
                                     JOptionPane.showMessageDialog(null, "Not enough stock available", "Error", JOptionPane.ERROR_MESSAGE);
                                     return;
+                                } else if (activeUser.getBalance() < (selectedProduct.getQuantity()*selectedProduct.getPrice())) {
+                                    JOptionPane.showMessageDialog(null, "You don't have enough balance for this purchase", "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
                                 }
 
                                 try {
