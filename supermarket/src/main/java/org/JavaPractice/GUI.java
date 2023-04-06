@@ -64,7 +64,6 @@ public class GUI extends JFrame {
                         JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
                     }
 
-                if (productList != null) {
                     JFrame productFrame = new JFrame("Product List");
                     productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -135,6 +134,18 @@ public class GUI extends JFrame {
 
                                 try {
                                     products.addProduct(name, price, weight, quantity);
+
+                                    // Get all products from the database
+                                    ArrayList<Product> productList = products.getAllProducts();
+
+                                    // Update the list model with the new list of products
+                                    listModel.clear();
+                                    for (Product product : productList) {
+                                        listModel.addElement(product);
+                                    }
+
+                                    // Repaint the list
+                                    list.repaint();
                                 } catch (SQLException ex) {
                                     JOptionPane.showMessageDialog(null, "Couldn't add product", "Error", JOptionPane.ERROR_MESSAGE);
                                 }
@@ -154,10 +165,6 @@ public class GUI extends JFrame {
                     contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
                     JOptionPane.showMessageDialog(null, contentPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    // If no results are found, show a message
-                    JOptionPane.showMessageDialog(null, "No contacts found", "All Contacts", JOptionPane.PLAIN_MESSAGE);
-                }
             }
         });
 
