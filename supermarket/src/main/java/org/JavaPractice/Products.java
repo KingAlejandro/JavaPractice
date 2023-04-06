@@ -47,4 +47,17 @@ public class Products {
             return rowsInserted > 0;
         }
     }
+    public boolean updateProduct(Product product) throws SQLException {
+        String query = "UPDATE products SET name = ?, price = ?, weight = ?, quantity = ? WHERE productID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, product.getName());
+            statement.setDouble(2, product.getPrice());
+            statement.setDouble(3, product.getWeight());
+            statement.setInt(4, product.getQuantity());
+            statement.setString(5, product.getProductID());
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
 }
