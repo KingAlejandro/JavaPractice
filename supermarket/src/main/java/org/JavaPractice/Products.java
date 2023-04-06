@@ -12,8 +12,8 @@ public class Products {
         this.connection = connection;
     }
 
-    public List<Product> getAllProducts() throws SQLException {
-        List<Product> productList = new ArrayList<>();
+    public ArrayList<Product> getAllProducts() throws SQLException {
+        ArrayList<Product> productList = new ArrayList<>();
 
         String query = "SELECT * FROM products";
         try (Statement statement = connection.createStatement();

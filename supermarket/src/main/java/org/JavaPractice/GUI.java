@@ -34,7 +34,7 @@ public class GUI extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-
+        gbc.gridy++;
         JButton registerButton = new JButton("Register");
         panel.add(registerButton, gbc);
         System.out.println("ActiveUser is null");
@@ -51,27 +51,38 @@ public class GUI extends JFrame {
         updateBalanceButton.setVisible(false);
         panel.add(updateBalanceButton, gbc);
 
+        gbc.gridy++;
         JButton productButton = new JButton("Product");
         productButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFrame productFrame = new JFrame("Product List");
-                productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
                 // Get all products from the database
-                List<Product> productList = null;
+                ArrayList<Product> productList = null;
                     try {
                         productList = products.getAllProducts();
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
                     }
 
-                // Create a JList with custom ListRenderer
-                JList<Product> productJList = new JList<>(productList.toArray(new Product[productList.size()]));
-                productJList.setCellRenderer(new ProductListRenderer());
+                if (productList != null) {
+                    JFrame productFrame = new JFrame("Product List");
+                    productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                // Create Buy and Edit buttons
-                JButton buyButton = new JButton("Buy");
-                JButton editButton = new JButton("Edit");
+                    final DefaultListModel<Product> listModel = new DefaultListModel<>();
+                    for (Product product : productList) {
+                        listModel.addElement(product);
+                    }
+
+                    final JList<Product> list = new JList<>(listModel);
+                    list.setCellRenderer(new ProductListRenderer());
+                    JScrollPane scrollPane = new JScrollPane(list);
+                    scrollPane.setPreferredSize(new Dimension(400, 300));
+
+                    // Create Buy and Edit buttons
+                    JButton buyButton = new JButton("Buy");
+                    JButton editButton = new JButton("Edit");
+
+
 
                 // Add action listeners to Buy and Edit buttons
                 buyButton.addActionListener(new ActionListener() {
@@ -88,16 +99,20 @@ public class GUI extends JFrame {
                 });
 
                 // Create a JPanel to hold the JList and buttons
-                JPanel productPanel = new JPanel();
-                productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.PAGE_AXIS));
-                productPanel.add(new JScrollPane(productJList));
-                productPanel.add(buyButton);
-                productPanel.add(editButton);
+                    // Add the buttons to a panel and create a content pane with the list and the
+                    // button panel
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                    buttonPanel.add(editButton, BorderLayout.NORTH);
+                    buttonPanel.add(buyButton, BorderLayout.SOUTH);
+                    JPanel contentPane = new JPanel(new BorderLayout());
+                    contentPane.add(scrollPane, BorderLayout.CENTER);
+                    contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
-                // Add the JPanel to the JFrame and show the window
-                productFrame.getContentPane().add(productPanel);
-                productFrame.pack();
-                productFrame.setVisible(true);
+                    JOptionPane.showMessageDialog(null, contentPane, "All Contacts", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    // If no results are found, show a message
+                    JOptionPane.showMessageDialog(null, "No contacts found", "All Contacts", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
 
@@ -250,27 +265,15 @@ public class GUI extends JFrame {
 
         }
 
-    public class ProductListRenderer extends JLabel implements ListCellRenderer<Product> {
-        private static final Color HIGHLIGHT_COLOR = new Color(0, 0, 128);
-
-        public ProductListRenderer() {
-            setOpaque(true);
-        }
-
+    public class ProductListRenderer extends DefaultListCellRenderer {
         @Override
-        public Component getListCellRendererComponent(JList<? extends Product> list, Product value, int index,
-                                                      boolean isSelected, boolean cellHasFocus) {
-            setText(value.getName() + " - $" + value.getPrice() + " - Quantity: " + value.getQuantity());
-
-            if (isSelected) {
-                setBackground(HIGHLIGHT_COLOR);
-                setForeground(Color.white);
-            } else {
-                setBackground(Color.white);
-                setForeground(Color.black);
-            }
-
-            return this;
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
+            // create a label with the contact's name and phone number
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            Product product = (Product) value;
+            setText(product.getName() + " - $" + product.getPrice() + " - Quantity: " + product.getQuantity());
+            return label;
         }
     }
 
