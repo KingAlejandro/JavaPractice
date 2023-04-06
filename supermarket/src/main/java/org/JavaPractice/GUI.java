@@ -257,6 +257,194 @@ public class GUI extends JFrame {
 // Add the Product button to the JFrame menu
         panel.add(productButton);
 
+        // Create a button to show the sales panel
+        gbc.gridy++;
+        JButton salesButton = new JButton("Sales");
+
+// Add an action listener to the sales button
+        salesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the sales buttons
+                JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
+
+                // Create the buttons and add them to the panel
+                JButton viewAllButton = new JButton("View All Sales");
+                JButton viewPeriodButton = new JButton("View Sales within a specific period");
+                buttonPanel.add(viewAllButton);
+                buttonPanel.add(viewPeriodButton);
+
+                // Add action listeners to the buttons
+                viewAllButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Get all sales from the database
+                        ArrayList<Sale> saleList = null;
+                        try {
+                            saleList = sales.getAllSales();
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Couldn't load sales", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        // Create a frame to hold the sale list
+                        JFrame saleFrame = new JFrame("Sale List");
+                        saleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                        // Create a list model to hold the sale data
+                        final DefaultListModel<Sale> listModel = new DefaultListModel<>();
+
+                        // Add each sale to the list model
+                        for (Sale sale : saleList) {
+                            listModel.addElement(sale);
+                        }
+
+                        // Create a list to hold the sale data
+                        final JList<Sale> list = new JList<>(listModel);
+                        list.setCellRenderer(new SaleListRenderer());
+
+                        // Create a scroll pane to hold the list
+                        JScrollPane scrollPane = new JScrollPane(list);
+                        scrollPane.setPreferredSize(new Dimension(400, 300));
+
+                        // Create a panel to hold the buttons
+                        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                        JButton infoButton = new JButton("Info");
+                        buttonPanel2.add(infoButton);
+
+                        // Add an action listener to the info button
+                        infoButton.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                // Get the selected sale from the list
+                                Sale selectedSale = list.getSelectedValue();
+
+                                if (selectedSale != null) {
+                                    // Create a panel to hold the sale information
+                                    JPanel salePanel = new JPanel(new GridLayout(0, 2));
+
+                                    // Add the sale information to the panel
+                                    salePanel.add(new JLabel("Product:"));
+                                    salePanel.add(new JLabel(selectedSale.getProductID()));
+                                    salePanel.add(new JLabel("Quantity:"));
+                                    salePanel.add(new JLabel(Integer.toString(selectedSale.getQuantitySold())));
+                                    salePanel.add(new JLabel("Price:"));
+                                    salePanel.add(new JLabel(Double.toString(selectedSale.getPriceAtSale())));
+                                    salePanel.add(new JLabel("Time:"));
+                                    salePanel.add(new JLabel(selectedSale.getSaleDate().toString()));
+
+                                    // Show the sale panel in a dialog box
+                                    JOptionPane.showMessageDialog(null, salePanel, "Sale Info", JOptionPane.PLAIN_MESSAGE);
+                                }
+                            }
+                        });
+
+                        // Add the components to the sale frame
+                        saleFrame.add(scrollPane, BorderLayout.CENTER);
+                        saleFrame.add(buttonPanel2, BorderLayout.SOUTH);
+                        saleFrame.pack();
+                        saleFrame.setLocationRelativeTo(null);
+                        saleFrame.setVisible(true);
+                    }
+                });
+
+                viewPeriodButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Create a panel to hold the form fields
+                        JPanel formPanel = new JPanel(new GridLayout(0, 2));
+
+                        // Create the form fields and add them to the panel
+                        JLabel startDateLabel = new JLabel("Start Date (YYYY-MM-DD):");
+                        JTextField startDateField = new JTextField();
+                        JLabel endDateLabel = new JLabel("End Date (YYYY-MM-DD):");
+                        JTextField endDateField = new JTextField();
+                        formPanel.add(startDateLabel);
+                        formPanel.add(startDateField);
+                        formPanel.add(endDateLabel);
+                        formPanel.add(endDateField);
+
+                        // Show the form panel in a dialog box
+                        int periodResult = JOptionPane.showConfirmDialog(null, formPanel, "Sales within a specific period", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                        // If the user clicked OK, show the list of sales within the specified period
+                        if (periodResult == JOptionPane.OK_OPTION) {
+                            // Get the start and end dates from the form fields
+                            LocalDateTime startDate = LocalDateTime.parse(startDateField.getText() + "T00:00:00");
+                            LocalDateTime endDate = LocalDateTime.parse(endDateField.getText() + "T23:59:59");
+
+                            // Get the sales within the specified period from the database
+                            ArrayList<Sale> saleList = null;
+                            try {
+                                saleList = sales.getSalesWithinPeriod(startDate, endDate);
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null, "Couldn't load sales within period", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+
+                            // Create a frame to hold the sale list
+                            JFrame saleFrame = new JFrame("Sale List");
+                            saleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                            // Create a list model to hold the sale data
+                            final DefaultListModel<Sale> listModel = new DefaultListModel<>();
+
+                            // Add each sale to the list model
+                            for (Sale sale : saleList) {
+                                listModel.addElement(sale);
+                            }
+
+                            // Create a list to hold the sale data
+                            final JList<Sale> list = new JList<>(listModel);
+                            list.setCellRenderer(new SaleListRenderer());
+
+                            // Create a scroll pane to hold the list
+                            JScrollPane scrollPane = new JScrollPane(list);
+                            scrollPane.setPreferredSize(new Dimension(400, 300));
+
+                            // Create a panel to hold the buttons
+                            JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                            JButton infoButton = new JButton("Info");
+                            buttonPanel2.add(infoButton);
+
+                            // Add an action listener to the info button
+                            infoButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    // Get the selected sale from the list
+                                    Sale selectedSale = list.getSelectedValue();
+
+                                    if (selectedSale != null) {
+                                        // Create a panel to hold the sale information
+                                        JPanel salePanel = new JPanel(new GridLayout(0, 2));
+
+                                        // Add the sale information to the panel
+                                        salePanel.add(new JLabel("Product:"));
+                                        salePanel.add(new JLabel(selectedSale.getProductID()));
+                                        salePanel.add(new JLabel("Quantity:"));
+                                        salePanel.add(new JLabel(Integer.toString(selectedSale.getQuantitySold())));
+                                        salePanel.add(new JLabel("Price:"));
+                                        salePanel.add(new JLabel(Double.toString(selectedSale.getPriceAtSale())));
+                                        salePanel.add(new JLabel("Time:"));
+                                        salePanel.add(new JLabel(selectedSale.getSaleDate().toString()));
+
+                                        // Show the sale panel in a dialog box
+                                        JOptionPane.showMessageDialog(null, salePanel, "Sale Info", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                }
+                            });
+
+                            // Add the components to the sale frame
+                            saleFrame.add(scrollPane, BorderLayout.CENTER);
+                            saleFrame.add(buttonPanel2, BorderLayout.SOUTH);
+                            saleFrame.pack();
+                            saleFrame.setLocationRelativeTo(null);
+                            saleFrame.setVisible(true);
+                        }
+                    }
+                });
+
+                // Show the button panel in a dialog box
+                int result = JOptionPane.showConfirmDialog(null, buttonPanel, "Sales", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            }
+        });
+        panel.add(salesButton, gbc);
+
         gbc.gridy++;
         JButton logoutButton = new JButton("Log Out");
         logoutButton.setVisible(false);
@@ -414,6 +602,19 @@ public class GUI extends JFrame {
             return label;
         }
     }
+
+    public class SaleListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            // Create a label with the sale's date and total volume
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            Sale sale = (Sale) value;
+            setText(sale.getSaleDate().toString() + " - Total Volume: $" + String.format("%.2f", sale.getPriceAtSale() * sale.getQuantitySold()));
+            return label;
+        }
+    }
+
+
 
 
 }
