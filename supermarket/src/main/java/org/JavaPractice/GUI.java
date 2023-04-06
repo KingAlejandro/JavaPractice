@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import java.lang.reflect.Array;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class GUI extends JFrame {
     private Users users;
@@ -86,8 +84,49 @@ public class GUI extends JFrame {
                 // Add action listeners to Buy and Edit buttons
                 buyButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        // Handle Buy button click
-                        // ...
+// Get the selected product from the list
+                        Product selectedProduct = list.getSelectedValue();
+
+                        if (selectedProduct != null) {
+                            // Create a JPanel to hold the form fields
+                            JPanel formPanel = new JPanel(new GridLayout(0, 2));
+
+                            // Create the form fields and add them to the form panel
+                            JLabel quantityLabel = new JLabel("Quantity:");
+                            JTextField quantityField = new JTextField();
+                            formPanel.add(quantityLabel);
+                            formPanel.add(quantityField);
+
+                            // Show the form panel in a dialog box
+                            int result = JOptionPane.showConfirmDialog(null, formPanel, "Buy Product", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                            // If the user clicked OK, update the product and add the sale to the database
+                            if (result == JOptionPane.OK_OPTION) {
+                                // Get the values from the form fields
+                                int quantity = Integer.parseInt(quantityField.getText());
+
+                                // Check that the quantity is valid
+                                if (quantity <= 0) {
+                                    JOptionPane.showMessageDialog(null, "Invalid quantity", "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                } else if (quantity > selectedProduct.getQuantity()) {
+                                    JOptionPane.showMessageDialog(null, "Not enough stock available", "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+
+                                try {
+                                    // Update the selected product in the database
+                                    selectedProduct.setQuantity(selectedProduct.getQuantity() - quantity);
+                                    // Get the current date and time
+                                    LocalDateTime now = LocalDateTime.now();
+                                    // Add the sale to the database
+                                    sales.addSale(activeUser.getUuid(),selectedProduct.getProductID(), quantity, selectedProduct.getPrice(), now);                                    products.updateProduct(selectedProduct);
+                                    list.repaint();
+                                } catch (SQLException ex) {
+                                    JOptionPane.showMessageDialog(null, "Couldn't update product or add sale", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        }
                     }
                 });
                 editButton.addActionListener(new ActionListener() {
