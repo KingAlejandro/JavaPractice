@@ -13,8 +13,8 @@ public class Sales {
         this.connection = connection;
     }
 
-    public List<Sale> getAllSales() throws SQLException {
-        List<Sale> saleList = new ArrayList<>();
+    public ArrayList<Sale> getAllSales() throws SQLException {
+        ArrayList<Sale> saleList = new ArrayList<>();
 
         String query = "SELECT * FROM sales";
         try (Statement statement = connection.createStatement();
@@ -35,8 +35,8 @@ public class Sales {
         return saleList;
     }
 
-    public List<Sale> getSalesWithinPeriod(Date startDate, Date endDate) throws SQLException {
-        List<Sale> saleList = new ArrayList<>();
+    public ArrayList<Sale> getSalesWithinPeriod(Date startDate, Date endDate) throws SQLException {
+        ArrayList<Sale> saleList = new ArrayList<>();
 
         String query = "SELECT * FROM sales WHERE saleDate BETWEEN ? AND ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
