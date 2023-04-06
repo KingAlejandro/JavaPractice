@@ -1,5 +1,7 @@
 package org.JavaPractice;
 
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.Date;
 
@@ -9,9 +11,9 @@ public class Sale {
     private String productID;
     private int quantitySold;
     private double priceAtSale;
-    private Date saleDate;
+    private LocalDateTime saleDate;
 
-    public Sale(String userID, String productID, int quantitySold, double priceAtSale, Date saleDate) {
+    public Sale(String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) {
         this.saleID = UUID.randomUUID().toString();
         this.userID = userID;
         this.productID = productID;
@@ -20,7 +22,7 @@ public class Sale {
         this.saleDate = saleDate;
     }
 
-    public Sale(String saleID, String userID, String productID, int quantitySold, double priceAtSale, Date saleDate) {
+    public Sale(String saleID, String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) {
         this.saleID = saleID;
         this.userID = userID;
         this.productID = productID;
@@ -69,11 +71,11 @@ public class Sale {
         this.priceAtSale = priceAtSale;
     }
 
-    public Date getSaleDate() {
+    public LocalDateTime getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(Date saleDate) {
+    public void setSaleDate(LocalDateTime saleDate) {
         this.saleDate = saleDate;
     }
 }

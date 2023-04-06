@@ -1,9 +1,9 @@
 package org.JavaPractice;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class Sales {
@@ -25,7 +25,7 @@ public class Sales {
                 String productID = resultSet.getString("productID");
                 int quantitySold = resultSet.getInt("quantitySold");
                 double priceAtSale = resultSet.getDouble("priceAtSale");
-                Date saleDate = resultSet.getDate("saleDate");
+                LocalDateTime saleDate = resultSet.getTimestamp("saleDate").toLocalDateTime();
 
                 Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, saleDate);
                 saleList.add(sale);
@@ -35,13 +35,13 @@ public class Sales {
         return saleList;
     }
 
-    public ArrayList<Sale> getSalesWithinPeriod(Date startDate, Date endDate) throws SQLException {
+    public ArrayList<Sale> getSalesWithinPeriod(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
         ArrayList<Sale> saleList = new ArrayList<>();
 
         String query = "SELECT * FROM sales WHERE saleDate BETWEEN ? AND ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setDate(1, new java.sql.Date(startDate.getTime()));
-            statement.setDate(2, new java.sql.Date(endDate.getTime()));
+            statement.setTimestamp(1, Timestamp.valueOf(startDate));
+            statement.setTimestamp(2, Timestamp.valueOf(endDate));
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -50,7 +50,7 @@ public class Sales {
                 String productID = resultSet.getString("productID");
                 int quantitySold = resultSet.getInt("quantitySold");
                 double priceAtSale = resultSet.getDouble("priceAtSale");
-                Date saleDate = resultSet.getDate("saleDate");
+                LocalDateTime saleDate = resultSet.getTimestamp("saleDate").toLocalDateTime();
 
                 Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, saleDate);
                 saleList.add(sale);
@@ -60,7 +60,7 @@ public class Sales {
         return saleList;
     }
 
-    public boolean addSale(String userID, String productID, int quantitySold, double priceAtSale, Date saleDate) throws SQLException {
+    public boolean addSale(String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) throws SQLException {
         String query = "INSERT INTO sales (saleID, userID, productID, quantitySold, priceAtSale, saleDate) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             String saleID = UUID.randomUUID().toString();
@@ -69,7 +69,7 @@ public class Sales {
             statement.setString(3, productID);
             statement.setInt(4, quantitySold);
             statement.setDouble(5, priceAtSale);
-            statement.setDate(6, new java.sql.Date(saleDate.getTime()));
+            statement.setTimestamp(6, Timestamp.valueOf(saleDate));
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;
