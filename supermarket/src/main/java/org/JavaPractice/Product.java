@@ -6,21 +6,24 @@ public class Product {
     private String productID;
     private String name;
     private double price;
+    private double cost;
     private double weight;
     private int quantity;
 
-    public Product(String name, double price, double weight, int quantity) {
+    public Product(String name, double price, double cost, double weight, int quantity) {
         this.productID = UUID.randomUUID().toString();
         this.name = name;
         this.price = price;
+        this.cost = cost;
         this.weight = weight;
         this.quantity = quantity;
     }
 
-    public Product(String productID, String name, double price, double weight, int quantity) {
+    public Product(String productID, String name, double price, double cost, double weight, int quantity) {
         this.productID = productID;
         this.name = name;
         this.price = price;
+        this.cost = cost;
         this.weight = weight;
         this.quantity = quantity;
     }
@@ -47,6 +50,14 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     public double getWeight() {

@@ -198,6 +198,8 @@ public class GUI extends JFrame {
                             JTextField nameField = new JTextField();
                             JLabel priceLabel = new JLabel("Price:");
                             JTextField priceField = new JTextField();
+                            JLabel costLabel = new JLabel("Cost:");
+                            JTextField costField = new JTextField();
                             JLabel quantityLabel = new JLabel("Quantity:");
                             JTextField quantityField = new JTextField();
                             JLabel weightLabel = new JLabel("Weight:");
@@ -206,6 +208,8 @@ public class GUI extends JFrame {
                             formPanel.add(nameField);
                             formPanel.add(priceLabel);
                             formPanel.add(priceField);
+                            formPanel.add(costLabel);
+                            formPanel.add(costField);
                             formPanel.add(quantityLabel);
                             formPanel.add(quantityField);
                             formPanel.add(weightLabel);
@@ -219,11 +223,12 @@ public class GUI extends JFrame {
                                 // Get the values from the form fields
                                 String name = nameField.getText();
                                 double price = Double.parseDouble(priceField.getText());
+                                double cost = Double.parseDouble(costField.getText());
                                 int quantity = Integer.parseInt(quantityField.getText());
                                 double weight = Double.parseDouble(weightField.getText());
 
                                 try {
-                                    products.addProduct(name, price, weight, quantity);
+                                    products.addProduct(name, price, cost, weight, quantity);
 
                                     // Get all products from the database
                                     ArrayList<Product> productList = products.getAllProducts();
