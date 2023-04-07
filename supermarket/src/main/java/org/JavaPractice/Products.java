@@ -33,6 +33,28 @@ public class Products {
         return productList;
     }
 
+    public Product getProductById(String productID) throws SQLException {
+        String query = "SELECT * FROM products WHERE productID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, productID);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    double price = resultSet.getDouble("price");
+                    double cost = resultSet.getDouble("cost");
+                    double weight = resultSet.getDouble("weight");
+                    int quantity = resultSet.getInt("quantity");
+
+                    return new Product(productID, name, price, cost, weight, quantity);
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+
     public boolean addProduct(String name, double price, double cost, double weight, int quantity) throws SQLException {
         String query = "INSERT INTO products (productID, name, price, cost, weight, quantity) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
