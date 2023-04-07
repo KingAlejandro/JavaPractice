@@ -23,7 +23,7 @@ public class DatabaseConnection {
                 System.out.println("Product version: " + dm.getDatabaseProductVersion());
 
                 // SQL command to create the users table if it doesn't exist
-                String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users (userID TEXT PRIMARY KEY, name TEXT, email TEXT UNIQUE, password TEXT, balance REAL)";
+                String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users (userID TEXT PRIMARY KEY, name TEXT, email TEXT UNIQUE, password TEXT, balance REAL, type TEXT)";
 
                 // Create a PreparedStatement to execute the SQL command
                 PreparedStatement preparedStatement = connection.prepareStatement(createUsersTableSQL);

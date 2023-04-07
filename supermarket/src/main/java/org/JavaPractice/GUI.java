@@ -520,6 +520,8 @@ public class GUI extends JFrame {
                 JTextField nameField = new JTextField(10);
                 JTextField emailField = new JTextField(10);
                 JTextField passwordField = new JTextField(10);
+                String[] options = {"buyer", "manager", "admin"};
+                JComboBox<String> typeField = new JComboBox<>(options);
 
                 // Create panel with labeled text fields
                 JPanel myPanel = new JPanel();
@@ -532,6 +534,9 @@ public class GUI extends JFrame {
                 myPanel.add(Box.createVerticalStrut(15)); // a spacer
                 myPanel.add(new JLabel("Password:"));
                 myPanel.add(passwordField);
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Type:"));
+                myPanel.add(typeField);
 
                 // Show panel in a dialog box
                 int result = JOptionPane.showOptionDialog(null, myPanel,
@@ -542,9 +547,10 @@ public class GUI extends JFrame {
                     String name = nameField.getText();
                     String email = emailField.getText();
                     String password = passwordField.getText();
+                    String type = (String) typeField.getSelectedItem();
 
                     // Attempt to register user
-                    boolean registerResult = users.registerUser(name, email, password, 0.0);
+                    boolean registerResult = users.registerUser(name, email, password, 0.0, type);
 
                     if (registerResult) {
                         JOptionPane.showMessageDialog(null, "User registered successfully");

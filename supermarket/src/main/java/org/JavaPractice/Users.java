@@ -28,7 +28,8 @@ public class Users {
                     String uuid = rs.getString("userID");
                     String name = rs.getString("name");
                     double balance = rs.getDouble("balance");
-                    return new User(uuid, name, email, balance);
+                    String type = rs.getString("type");
+                    return new User(uuid, name, email, balance, type);
                 }
             }
         } catch (SQLException e) {
@@ -38,11 +39,11 @@ public class Users {
         return null;
     }
 
-    public boolean registerUser(String name, String email, String password, double balance) {
+    public boolean registerUser(String name, String email, String password, double balance, String type) {
         String uuid = UUID.randomUUID().toString();
         String hashedPassword = hashPassword(password);
 
-        String sql = "INSERT INTO users(userID,name,email,password,balance) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO users(userID,name,email,password,balance,type) VALUES(?,?,?,?,?,?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, uuid);
@@ -50,6 +51,7 @@ public class Users {
             pstmt.setString(3, email);
             pstmt.setString(4, hashedPassword);
             pstmt.setDouble(5, balance);
+            pstmt.setString(6, type);
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {

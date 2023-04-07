@@ -5,12 +5,14 @@ public class User {
     private String name;
     private String email;
     private double balance;
+    private String userType;
 
-    public User(String uuid, String name, String email, double balance) {
+    public User(String uuid, String name, String email, double balance, String userType) {
         this.uuid = uuid;
         this.name = name;
         this.email = email;
         this.balance = balance;
+        this.userType = userType;
     }
 
     public String getUuid() {
@@ -43,5 +45,13 @@ public class User {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }
