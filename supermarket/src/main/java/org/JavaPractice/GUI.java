@@ -147,6 +147,8 @@ public class GUI extends JFrame {
                             JTextField nameField = new JTextField(selectedProduct.getName());
                             JLabel priceLabel = new JLabel("Price:");
                             JTextField priceField = new JTextField(Double.toString(selectedProduct.getPrice()));
+                            JLabel costLabel = new JLabel("Cost:");
+                            JTextField costField = new JTextField(Double.toString(selectedProduct.getCost()));
                             JLabel quantityLabel = new JLabel("Quantity:");
                             JTextField quantityField = new JTextField(Integer.toString(selectedProduct.getQuantity()));
                             JLabel weightLabel = new JLabel("Weight:");
@@ -155,6 +157,8 @@ public class GUI extends JFrame {
                             formPanel.add(nameField);
                             formPanel.add(priceLabel);
                             formPanel.add(priceField);
+                            formPanel.add(costLabel);
+                            formPanel.add(costField);
                             formPanel.add(quantityLabel);
                             formPanel.add(quantityField);
                             formPanel.add(weightLabel);
@@ -168,12 +172,14 @@ public class GUI extends JFrame {
                                 // Get the values from the form fields
                                 String name = nameField.getText();
                                 double price = Double.parseDouble(priceField.getText());
+                                double cost = Double.parseDouble(costField.getText());
                                 int quantity = Integer.parseInt(quantityField.getText());
                                 double weight = Double.parseDouble(weightField.getText());
 
                                 // Update the selected product in the database
                                 selectedProduct.setName(name);
                                 selectedProduct.setPrice(price);
+                                selectedProduct.setCost(cost);
                                 selectedProduct.setQuantity(quantity);
                                 selectedProduct.setWeight(weight);
                                 try {
