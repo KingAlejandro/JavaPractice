@@ -15,6 +15,26 @@ public class Users {
         this.connection = connection;
     }
 
+    public User getUserById(String userID) throws SQLException {
+        String query = "SELECT * FROM users WHERE userID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, userID);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    String uuid = rs.getString("userID");
+                    String name = rs.getString("name");
+                    String email = rs.getString("email");
+                    double balance = rs.getDouble("balance");
+                    String type = rs.getString("type");
+                    return new User(uuid, name, email, balance, type);
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
     public User login(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
