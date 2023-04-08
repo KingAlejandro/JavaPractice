@@ -605,7 +605,7 @@ public class GUI extends JFrame {
 
                         if (loginResult != null) {
                             activeUser = loginResult;
-                            JOptionPane.showMessageDialog(null, "You are now logged in as " + email);
+                            JOptionPane.showMessageDialog(null, "You are now logged in as " + email + " type: " + activeUser.getUserType());
                             loginButton.setVisible(false);
                             registerButton.setVisible(false);
                             logoutButton.setVisible(true);
@@ -613,7 +613,7 @@ public class GUI extends JFrame {
                             updateBalanceButton.setVisible(true);
 
                             productButton.setVisible(true);
-                            if (activeUser.getUserType() == "admin"){
+                            if (activeUser.getUserType().equals("admin")){
                             salesButton.setVisible(true);
                         }
 
