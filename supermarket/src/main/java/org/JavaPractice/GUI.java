@@ -124,7 +124,7 @@ public class GUI extends JFrame {
                                     // Get the current date and time
                                     LocalDateTime now = LocalDateTime.now();
                                     // Add the sale to the database
-                                    sales.addSale(activeUser.getUuid(),selectedProduct.getProductID(), quantity, selectedProduct.getPrice(), now);                                    products.updateProduct(selectedProduct);
+                                    sales.addSale(activeUser.getUuid(),selectedProduct.getProductID(), quantity, selectedProduct.getPrice(), selectedProduct.getCost(), now);                                    products.updateProduct(selectedProduct);
                                     list.repaint();
                                 } catch (SQLException ex) {
                                     JOptionPane.showMessageDialog(null, "Couldn't update product or add sale", "Error", JOptionPane.ERROR_MESSAGE);
@@ -133,6 +133,7 @@ public class GUI extends JFrame {
                         }
                     }
                 });
+
                 editButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
 // Get the selected product from the list
@@ -257,10 +258,16 @@ public class GUI extends JFrame {
                 // Create a JPanel to hold the JList and buttons
                     // Add the buttons to a panel and create a content pane with the list and the
                     // button panel
+
+
                     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                System.out.println("User type: " + activeUser.getUserType());
+
+
                     buttonPanel.add(editButton, BorderLayout.NORTH);
-                    buttonPanel.add(buyButton, BorderLayout.SOUTH);
                     buttonPanel.add(addProductButton, BorderLayout.SOUTH);
+                
+                    buttonPanel.add(buyButton, BorderLayout.SOUTH);
                     JPanel contentPane = new JPanel(new BorderLayout());
                     contentPane.add(scrollPane, BorderLayout.CENTER);
                     contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -511,8 +518,11 @@ public class GUI extends JFrame {
                             logoutButton.setVisible(true);
                             quitButton.setVisible(true);
                             updateBalanceButton.setVisible(true);
+
                             productButton.setVisible(true);
+                            if (activeUser.getUserType() == "admin"){
                             salesButton.setVisible(true);
+                        }
 
 
                         } else {

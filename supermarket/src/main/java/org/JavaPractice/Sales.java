@@ -25,9 +25,10 @@ public class Sales {
                 String productID = resultSet.getString("productID");
                 int quantitySold = resultSet.getInt("quantitySold");
                 double priceAtSale = resultSet.getDouble("priceAtSale");
+                double costAtSale = resultSet.getDouble("costAtSale");
                 LocalDateTime saleDate = resultSet.getTimestamp("saleDate").toLocalDateTime();
 
-                Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, saleDate);
+                Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, costAtSale, saleDate);
                 saleList.add(sale);
             }
         }
@@ -50,9 +51,10 @@ public class Sales {
                 String productID = resultSet.getString("productID");
                 int quantitySold = resultSet.getInt("quantitySold");
                 double priceAtSale = resultSet.getDouble("priceAtSale");
+                double costAtSale = resultSet.getDouble("costAtSale");
                 LocalDateTime saleDate = resultSet.getTimestamp("saleDate").toLocalDateTime();
 
-                Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, saleDate);
+                Sale sale = new Sale(saleID, userID, productID, quantitySold, priceAtSale, costAtSale, saleDate);
                 saleList.add(sale);
             }
         }
@@ -60,8 +62,8 @@ public class Sales {
         return saleList;
     }
 
-    public boolean addSale(String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) throws SQLException {
-        String query = "INSERT INTO sales (saleID, userID, productID, quantitySold, priceAtSale, saleDate) VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean addSale(String userID, String productID, int quantitySold, double priceAtSale, double costAtSale, LocalDateTime saleDate) throws SQLException {
+        String query = "INSERT INTO sales (saleID, userID, productID, quantitySold, priceAtSale, costAtSale, saleDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             String saleID = UUID.randomUUID().toString();
             statement.setString(1, saleID);
@@ -69,7 +71,8 @@ public class Sales {
             statement.setString(3, productID);
             statement.setInt(4, quantitySold);
             statement.setDouble(5, priceAtSale);
-            statement.setTimestamp(6, Timestamp.valueOf(saleDate));
+            statement.setDouble(6, costAtSale);
+            statement.setTimestamp(7, Timestamp.valueOf(saleDate));
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;

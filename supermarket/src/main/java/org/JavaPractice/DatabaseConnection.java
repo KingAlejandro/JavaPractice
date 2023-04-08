@@ -32,7 +32,7 @@ public class DatabaseConnection {
                 preparedStatement.execute();
 
                 // SQL command to create the products table if it doesn't exist
-                String createProductsTableSQL = "CREATE TABLE IF NOT EXISTS products (productID TEXT PRIMARY KEY, name TEXT, price REAL, weight REAL, quantity INTEGER)";
+                String createProductsTableSQL = "CREATE TABLE IF NOT EXISTS products (productID TEXT PRIMARY KEY, name TEXT, price REAL, cost REAL, weight REAL, quantity INTEGER)";
 
                 // Create a PreparedStatement to execute the SQL command
                 preparedStatement = connection.prepareStatement(createProductsTableSQL);
@@ -41,7 +41,7 @@ public class DatabaseConnection {
                 preparedStatement.execute();
 
                 // SQL command to create the sales table if it doesn't exist
-                String createSalesTableSQL = "CREATE TABLE IF NOT EXISTS sales (saleID TEXT PRIMARY KEY, userID TEXT, productID TEXT, quantitySold INTEGER, priceAtSale REAL, saleDate TIMESTAMP, FOREIGN KEY(userID) REFERENCES users(userID), FOREIGN KEY(productID) REFERENCES products(productID))";
+                String createSalesTableSQL = "CREATE TABLE IF NOT EXISTS sales (saleID TEXT PRIMARY KEY, userID TEXT, productID TEXT, quantitySold INTEGER, priceAtSale REAL, costAtSale REAL, saleDate TIMESTAMP, FOREIGN KEY(userID) REFERENCES users(userID), FOREIGN KEY(productID) REFERENCES products(productID))";
 
                 // Create a PreparedStatement to execute the SQL command
                 preparedStatement = connection.prepareStatement(createSalesTableSQL);

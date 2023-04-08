@@ -11,23 +11,26 @@ public class Sale {
     private String productID;
     private int quantitySold;
     private double priceAtSale;
+    private double costAtSale;
     private LocalDateTime saleDate;
 
-    public Sale(String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) {
+    public Sale(String userID, String productID, int quantitySold, double priceAtSale, double costAtSale, LocalDateTime saleDate) {
         this.saleID = UUID.randomUUID().toString();
         this.userID = userID;
         this.productID = productID;
         this.quantitySold = quantitySold;
         this.priceAtSale = priceAtSale;
+        this.costAtSale = costAtSale;
         this.saleDate = saleDate;
     }
 
-    public Sale(String saleID, String userID, String productID, int quantitySold, double priceAtSale, LocalDateTime saleDate) {
+    public Sale(String saleID, String userID, String productID, int quantitySold, double priceAtSale, double costAtSale, LocalDateTime saleDate) {
         this.saleID = saleID;
         this.userID = userID;
         this.productID = productID;
         this.quantitySold = quantitySold;
         this.priceAtSale = priceAtSale;
+        this.costAtSale = costAtSale;
         this.saleDate = saleDate;
     }
 
@@ -69,6 +72,14 @@ public class Sale {
 
     public void setPriceAtSale(double priceAtSale) {
         this.priceAtSale = priceAtSale;
+    }
+
+    public double getCostAtSale() {
+        return costAtSale;
+    }
+
+    public void setCostAtSale(double costAtSale) {
+        this.costAtSale = costAtSale;
     }
 
     public LocalDateTime getSaleDate() {
