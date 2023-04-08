@@ -57,28 +57,29 @@ public class GUI extends JFrame {
 
                 // Get all products from the database
                 ArrayList<Product> productList = null;
-                    try {
-                        productList = products.getAllProducts();
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                try {
+                    productList = products.getAllProducts();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
+                }
 
-                    JFrame productFrame = new JFrame("Product List");
-                    productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JFrame productFrame = new JFrame("Product List");
+                productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                    final DefaultListModel<Product> listModel = new DefaultListModel<>();
-                    for (Product product : productList) {
-                        listModel.addElement(product);
-                    }
+                final DefaultListModel<Product> listModel = new DefaultListModel<>();
+                for (Product product : productList) {
+                    listModel.addElement(product);
+                }
 
-                    final JList<Product> list = new JList<>(listModel);
-                    list.setCellRenderer(new ProductListRenderer());
-                    JScrollPane scrollPane = new JScrollPane(list);
-                    scrollPane.setPreferredSize(new Dimension(400, 300));
+                final JList<Product> list = new JList<>(listModel);
+                list.setCellRenderer(new ProductListRenderer());
+                JScrollPane scrollPane = new JScrollPane(list);
+                scrollPane.setPreferredSize(new Dimension(400, 300));
 
-                    // Create Buy and Edit buttons
-                    JButton buyButton = new JButton("Buy");
-                    JButton editButton = new JButton("Edit");
+                // Create Buy and Edit buttons
+                JButton buyButton = new JButton("Buy");
+                JButton editButton = new JButton("Edit");
+                JButton addProductButton = new JButton("Add Product");
 
 
 
@@ -194,73 +195,41 @@ public class GUI extends JFrame {
                     }
                 });
 
-                    JButton addProductButton = new JButton("Add Product");
-                    addProductButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            // Create a JPanel to hold the form fields
-                            JPanel formPanel = new JPanel(new GridLayout(0, 2));
+                addProductButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Create a new product with default values
+                        Product product = new Product("", 0.0, 0.0, 0, 0);
 
-                            // Create the form fields and add them to the form panel
-                            JLabel nameLabel = new JLabel("Product Name:");
-                            JTextField nameField = new JTextField();
-                            JLabel priceLabel = new JLabel("Price:");
-                            JTextField priceField = new JTextField();
-                            JLabel costLabel = new JLabel("Cost:");
-                            JTextField costField = new JTextField();
-                            JLabel quantityLabel = new JLabel("Quantity:");
-                            JTextField quantityField = new JTextField();
-                            JLabel weightLabel = new JLabel("Weight:");
-                            JTextField weightField = new JTextField();
-                            formPanel.add(nameLabel);
-                            formPanel.add(nameField);
-                            formPanel.add(priceLabel);
-                            formPanel.add(priceField);
-                            formPanel.add(costLabel);
-                            formPanel.add(costField);
-                            formPanel.add(quantityLabel);
-                            formPanel.add(quantityField);
-                            formPanel.add(weightLabel);
-                            formPanel.add(weightField);
+                        // Show the product dialog and update the product in the database if the user clicked OK
+                        Product updatedProduct = showProductDialog("Add Product", product);
+                        if (updatedProduct != null) {
+                            try {
+                                products.addProduct(updatedProduct.getName(), updatedProduct.getPrice(), updatedProduct.getCost(), updatedProduct.getWeight(), updatedProduct.getQuantity());
 
-                            // Show the form panel in a dialog box
-                            int result = JOptionPane.showConfirmDialog(null, formPanel, "Add Product", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                // Get all products from the database
+                                ArrayList<Product> productList = products.getAllProducts();
 
-                            // If the user clicked OK, create a new Product object and add it to the database
-                            if (result == JOptionPane.OK_OPTION) {
-                                // Get the values from the form fields
-                                String name = nameField.getText();
-                                double price = Double.parseDouble(priceField.getText());
-                                double cost = Double.parseDouble(costField.getText());
-                                int quantity = Integer.parseInt(quantityField.getText());
-                                double weight = Double.parseDouble(weightField.getText());
-
-                                try {
-                                    products.addProduct(name, price, cost, weight, quantity);
-
-                                    // Get all products from the database
-                                    ArrayList<Product> productList = products.getAllProducts();
-
-                                    // Update the list model with the new list of products
-                                    listModel.clear();
-                                    for (Product product : productList) {
-                                        listModel.addElement(product);
-                                    }
-
-                                    // Repaint the list
-                                    list.repaint();
-                                } catch (SQLException ex) {
-                                    JOptionPane.showMessageDialog(null, "Couldn't add product", "Error", JOptionPane.ERROR_MESSAGE);
+                                // Update the list model with the new list of products
+                                listModel.clear();
+                                for (Product p : productList) {
+                                    listModel.addElement(p);
                                 }
+
+                                // Repaint the list
+                                list.repaint();
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null, "Couldn't add product", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
-                    });
+                    }
+                });
 
                 // Create a JPanel to hold the JList and buttons
-                    // Add the buttons to a panel and create a content pane with the list and the
-                    // button panel
+                // Add the buttons to a panel and create a content pane with the list and the
+                // button panel
 
 
-                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
                 System.out.println("User type: " + activeUser.getUserType());
 
 
@@ -268,13 +237,65 @@ public class GUI extends JFrame {
                     buttonPanel.add(editButton, BorderLayout.NORTH);
                     buttonPanel.add(addProductButton, BorderLayout.SOUTH);
                 }
-                    buttonPanel.add(buyButton, BorderLayout.SOUTH);
-                    JPanel contentPane = new JPanel(new BorderLayout());
-                    contentPane.add(scrollPane, BorderLayout.CENTER);
-                    contentPane.add(buttonPanel, BorderLayout.SOUTH);
+                buttonPanel.add(buyButton, BorderLayout.SOUTH);
+                JPanel contentPane = new JPanel(new BorderLayout());
+                contentPane.add(scrollPane, BorderLayout.CENTER);
+                contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
-                    JOptionPane.showMessageDialog(null, contentPane, "All Products", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, contentPane, "All Products", JOptionPane.PLAIN_MESSAGE);
             }
+
+            private Product showProductDialog(String title, Product product) {
+                // Create a JPanel to hold the form fields
+                JPanel formPanel = new JPanel(new GridLayout(0, 2));
+
+                // Create the form fields and add them to the form panel
+                JLabel nameLabel = new JLabel("Product Name:");
+                JTextField nameField = new JTextField(product.getName());
+                JLabel priceLabel = new JLabel("Price:");
+                JTextField priceField = new JTextField(Double.toString(product.getPrice()));
+                JLabel costLabel = new JLabel("Cost:");
+                JTextField costField = new JTextField(Double.toString(product.getCost()));
+                JLabel quantityLabel = new JLabel("Quantity:");
+                JTextField quantityField = new JTextField(Integer.toString(product.getQuantity()));
+                JLabel weightLabel = new JLabel("Weight:");
+                JTextField weightField = new JTextField(Double.toString(product.getWeight()));
+                formPanel.add(nameLabel);
+                formPanel.add(nameField);
+                formPanel.add(priceLabel);
+                formPanel.add(priceField);
+                formPanel.add(costLabel);
+                formPanel.add(costField);
+                formPanel.add(quantityLabel);
+                formPanel.add(quantityField);
+                formPanel.add(weightLabel);
+                formPanel.add(weightField);
+
+                // Show the form panel in a dialog box
+                int result = JOptionPane.showConfirmDialog(null, formPanel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                // If the user clicked OK, update the product in the database and return it
+                if (result == JOptionPane.OK_OPTION) {
+                    // Get the values from the form fields
+                    String name = nameField.getText();
+                    double price = Double.parseDouble(priceField.getText());
+                    double cost = Double.parseDouble(costField.getText());
+                    int quantity = Integer.parseInt(quantityField.getText());
+                    double weight = Double.parseDouble(weightField.getText());
+
+                    // Update the product and return it
+                    product.setName(name);
+                    product.setPrice(price);
+                    product.setCost(cost);
+                    product.setQuantity(quantity);
+                    product.setWeight(weight);
+                    return product;
+                }
+
+                // If the user clicked Cancel, return null
+                return null;
+            }
+
         });
 
 // Add the Product button to the JFrame menu
@@ -520,52 +541,52 @@ public class GUI extends JFrame {
 
 
         add(panel);
-            loginButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JTextField emailField = new JTextField(10);
-                    JTextField passwordField = new JTextField(10);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTextField emailField = new JTextField(10);
+                JTextField passwordField = new JTextField(10);
 
-                    JPanel myPanel = new JPanel();
-                    myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
-                    myPanel.add(new JLabel("Email:"));
-                    myPanel.add(emailField);
-                    myPanel.add(Box.createVerticalStrut(15)); // a spacer
-                    myPanel.add(new JLabel("Password:"));
-                    myPanel.add(passwordField);
+                JPanel myPanel = new JPanel();
+                myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
+                myPanel.add(new JLabel("Email:"));
+                myPanel.add(emailField);
+                myPanel.add(Box.createVerticalStrut(15)); // a spacer
+                myPanel.add(new JLabel("Password:"));
+                myPanel.add(passwordField);
 
-                    int result = JOptionPane.showOptionDialog(null, myPanel,
-                            "Log In", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                            null, new String[]{"Log In", "Cancel"}, null);
-                    if (result == JOptionPane.YES_OPTION) {
-                        String email = emailField.getText();
-                        String password = passwordField.getText();
+                int result = JOptionPane.showOptionDialog(null, myPanel,
+                        "Log In", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                        null, new String[]{"Log In", "Cancel"}, null);
+                if (result == JOptionPane.YES_OPTION) {
+                    String email = emailField.getText();
+                    String password = passwordField.getText();
 
-                        User loginResult = users.login(email,password);
+                    User loginResult = users.login(email,password);
 
-                        if (loginResult != null) {
-                            activeUser = loginResult;
-                            JOptionPane.showMessageDialog(null, "You are now logged in as " + email + " type: " + activeUser.getUserType());
-                            loginButton.setVisible(false);
-                            registerButton.setVisible(false);
-                            logoutButton.setVisible(true);
-                            quitButton.setVisible(true);
-                            updateBalanceButton.setVisible(true);
+                    if (loginResult != null) {
+                        activeUser = loginResult;
+                        JOptionPane.showMessageDialog(null, "You are now logged in as " + email + " type: " + activeUser.getUserType());
+                        loginButton.setVisible(false);
+                        registerButton.setVisible(false);
+                        logoutButton.setVisible(true);
+                        quitButton.setVisible(true);
+                        updateBalanceButton.setVisible(true);
 
-                            productButton.setVisible(true);
-                            if (activeUser.getUserType().equals("admin")){
+                        productButton.setVisible(true);
+                        if (activeUser.getUserType().equals("admin")){
                             salesButton.setVisible(true);
                         }
 
 
-                        } else {
-                            // Login failed
-                            JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-
+                    } else {
+                        // Login failed
+                        JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                };
-            });
+
+                }
+            };
+        });
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -659,7 +680,7 @@ public class GUI extends JFrame {
             }
         });
 
-        }
+    }
 
     public class ProductListRenderer extends DefaultListCellRenderer {
         @Override
