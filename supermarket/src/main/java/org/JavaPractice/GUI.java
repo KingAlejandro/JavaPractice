@@ -137,55 +137,15 @@ public class GUI extends JFrame {
 
                 editButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-// Get the selected product from the list
+                        // Get the selected product from the list
                         Product selectedProduct = list.getSelectedValue();
 
                         if (selectedProduct != null) {
-                            // Create a JPanel to hold the form fields
-                            JPanel formPanel = new JPanel(new GridLayout(0, 2));
-
-                            // Create the form fields and add them to the form panel
-                            JLabel nameLabel = new JLabel("Product Name:");
-                            JTextField nameField = new JTextField(selectedProduct.getName());
-                            JLabel priceLabel = new JLabel("Price:");
-                            JTextField priceField = new JTextField(Double.toString(selectedProduct.getPrice()));
-                            JLabel costLabel = new JLabel("Cost:");
-                            JTextField costField = new JTextField(Double.toString(selectedProduct.getCost()));
-                            JLabel quantityLabel = new JLabel("Quantity:");
-                            JTextField quantityField = new JTextField(Integer.toString(selectedProduct.getQuantity()));
-                            JLabel weightLabel = new JLabel("Weight:");
-                            JTextField weightField = new JTextField(Double.toString(selectedProduct.getWeight()));
-                            formPanel.add(nameLabel);
-                            formPanel.add(nameField);
-                            formPanel.add(priceLabel);
-                            formPanel.add(priceField);
-                            formPanel.add(costLabel);
-                            formPanel.add(costField);
-                            formPanel.add(quantityLabel);
-                            formPanel.add(quantityField);
-                            formPanel.add(weightLabel);
-                            formPanel.add(weightField);
-
-                            // Show the form panel in a dialog box
-                            int result = JOptionPane.showConfirmDialog(null, formPanel, "Edit Product", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                            // If the user clicked OK, update the product in the database
-                            if (result == JOptionPane.OK_OPTION) {
-                                // Get the values from the form fields
-                                String name = nameField.getText();
-                                double price = Double.parseDouble(priceField.getText());
-                                double cost = Double.parseDouble(costField.getText());
-                                int quantity = Integer.parseInt(quantityField.getText());
-                                double weight = Double.parseDouble(weightField.getText());
-
-                                // Update the selected product in the database
-                                selectedProduct.setName(name);
-                                selectedProduct.setPrice(price);
-                                selectedProduct.setCost(cost);
-                                selectedProduct.setQuantity(quantity);
-                                selectedProduct.setWeight(weight);
+                            // Show the product dialog and update the product in the database if the user clicked OK
+                            Product updatedProduct = showProductDialog("Edit Product", selectedProduct);
+                            if (updatedProduct != null) {
                                 try {
-                                    products.updateProduct(selectedProduct);
+                                    products.updateProduct(updatedProduct);
                                     list.repaint();
                                 } catch (SQLException ex) {
                                     JOptionPane.showMessageDialog(null, "Couldn't update product", "Error", JOptionPane.ERROR_MESSAGE);
@@ -193,6 +153,7 @@ public class GUI extends JFrame {
                             }
                         }
                     }
+
                 });
 
                 addProductButton.addActionListener(new ActionListener() {
