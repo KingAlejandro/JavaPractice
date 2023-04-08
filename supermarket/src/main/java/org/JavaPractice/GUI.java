@@ -264,9 +264,10 @@ public class GUI extends JFrame {
                 System.out.println("User type: " + activeUser.getUserType());
 
 
+                if (activeUser.getUserType().equals("manager") || activeUser.getUserType().equals("admin")){
                     buttonPanel.add(editButton, BorderLayout.NORTH);
                     buttonPanel.add(addProductButton, BorderLayout.SOUTH);
-                
+                }
                     buttonPanel.add(buyButton, BorderLayout.SOUTH);
                     JPanel contentPane = new JPanel(new BorderLayout());
                     contentPane.add(scrollPane, BorderLayout.CENTER);
