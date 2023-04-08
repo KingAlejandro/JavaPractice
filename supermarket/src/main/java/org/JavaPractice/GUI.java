@@ -434,18 +434,61 @@ public class GUI extends JFrame {
                                     Sale selectedSale = list.getSelectedValue();
 
                                     if (selectedSale != null) {
+                                        // Get the user who made the sale
+                                        User user = null;
+                                        try {
+                                            user = users.getUserById(selectedSale.getUserID());
+                                        } catch (SQLException ex) {
+                                            JOptionPane.showMessageDialog(null, "Error getting user data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                        }
+
+                                        // Get the product that was sold
+                                        Product product = null;
+                                        try {
+                                            product = products.getProductById(selectedSale.getProductID());
+                                        } catch (SQLException ex) {
+                                            JOptionPane.showMessageDialog(null, "Error getting product data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                        }
+
+                                        // Calculate cost and margin
+                                        double cost = selectedSale.getCostAtSale() * selectedSale.getQuantitySold();
+                                        double price = selectedSale.getPriceAtSale() * selectedSale.getQuantitySold();
+                                        double margin = (price - cost) / cost * 100;
+
+                                        // Calculate profit
+                                        double profit = price - cost;
+
                                         // Create a panel to hold the sale information
                                         JPanel salePanel = new JPanel(new GridLayout(0, 2));
 
                                         // Add the sale information to the panel
                                         salePanel.add(new JLabel("Product:"));
-                                        salePanel.add(new JLabel(selectedSale.getProductID()));
+                                        if (product != null) {
+                                            salePanel.add(new JLabel(product.getName()));
+                                        } else {
+                                            salePanel.add(new JLabel("N/A"));
+                                        }
                                         salePanel.add(new JLabel("Quantity:"));
                                         salePanel.add(new JLabel(Integer.toString(selectedSale.getQuantitySold())));
                                         salePanel.add(new JLabel("Price:"));
                                         salePanel.add(new JLabel(Double.toString(selectedSale.getPriceAtSale())));
+                                        salePanel.add(new JLabel("Cost at Sale:"));
+                                        salePanel.add(new JLabel(Double.toString(selectedSale.getCostAtSale())));
+   
                                         salePanel.add(new JLabel("Time:"));
                                         salePanel.add(new JLabel(selectedSale.getSaleDate().toString()));
+                                        salePanel.add(new JLabel("Buyer:"));
+                                        if (user != null) {
+                                            salePanel.add(new JLabel(user.getName()));
+                                        } else {
+                                            salePanel.add(new JLabel("N/A"));
+                                        }
+                                        salePanel.add(new JLabel("Email:"));
+                                        if (user != null) {
+                                            salePanel.add(new JLabel(user.getEmail()));
+                                        } else {
+                                            salePanel.add(new JLabel("N/A"));
+                                        }
 
                                         // Show the sale panel in a dialog box
                                         JOptionPane.showMessageDialog(null, salePanel, "Sale Info", JOptionPane.PLAIN_MESSAGE);
