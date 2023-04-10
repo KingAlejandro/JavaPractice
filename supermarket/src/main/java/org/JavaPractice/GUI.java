@@ -66,10 +66,7 @@ public class GUI extends JFrame {
                 JFrame productFrame = new JFrame("Product List");
                 productFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                final DefaultListModel<Product> listModel = new DefaultListModel<>();
-                for (Product product : productList) {
-                    listModel.addElement(product);
-                }
+                DefaultListModel<Product> listModel = createListModel(productList);
 
                 final JList<Product> list = new JList<>(listModel);
                 list.setCellRenderer(new ProductListRenderer());
@@ -285,13 +282,8 @@ public class GUI extends JFrame {
                         JFrame saleFrame = new JFrame("Sale List");
                         saleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                        // Create a list model to hold the sale data
-                        final DefaultListModel<Sale> listModel = new DefaultListModel<>();
-
-                        // Add each sale to the list model
-                        for (Sale sale : saleList) {
-                            listModel.addElement(sale);
-                        }
+                        // Create and populate a list model to hold the sale data
+                        DefaultListModel<Sale> listModel = createListModel(saleList);
 
                         // Create a list to hold the sale data
                         final JList<Sale> list = new JList<>(listModel);
@@ -363,13 +355,8 @@ public class GUI extends JFrame {
                             JFrame saleFrame = new JFrame("Sale List");
                             saleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                            // Create a list model to hold the sale data
-                            final DefaultListModel<Sale> listModel = new DefaultListModel<>();
-
-                            // Add each sale to the list model
-                            for (Sale sale : saleList) {
-                                listModel.addElement(sale);
-                            }
+                            // Create and populate list model to hold the sale data
+                            DefaultListModel<Sale> listModel = createListModel(saleList);
 
                             // Create a list to hold the sale data
                             final JList<Sale> list = new JList<>(listModel);
@@ -631,9 +618,20 @@ public class GUI extends JFrame {
                 }
             }
         });
+        
+        
 
     }
 
+
+    private DefaultListModel createListModel(ArrayList<?> objects) {
+        DefaultListModel model = new DefaultListModel();
+        for (Object obj : objects) {
+            model.addElement(obj);
+        }
+        return model;
+    }
+    
     public class ProductListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
