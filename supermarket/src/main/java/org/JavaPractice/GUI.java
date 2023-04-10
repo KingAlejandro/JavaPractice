@@ -60,7 +60,7 @@ public class GUI extends JFrame {
                 try {
                     productList = products.getAllProducts();
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Couldn't load products", "Error", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("Couldn't load products");
                 }
 
                 JFrame productFrame = new JFrame("Product List");
@@ -106,13 +106,13 @@ public class GUI extends JFrame {
 
                                 // Check that the quantity is valid
                                 if (quantity <= 0) {
-                                    JOptionPane.showMessageDialog(null, "Invalid quantity", "Error", JOptionPane.ERROR_MESSAGE);
+                                    showErrorDialog("Invalid quantity");
                                     return;
                                 } else if (quantity > selectedProduct.getQuantity()) {
-                                    JOptionPane.showMessageDialog(null, "Not enough stock available", "Error", JOptionPane.ERROR_MESSAGE);
+                                    showErrorDialog("Not enough stock available");
                                     return;
                                 } else if (activeUser.getBalance() < (selectedProduct.getQuantity()*selectedProduct.getPrice())) {
-                                    JOptionPane.showMessageDialog(null, "You don't have enough balance for this purchase", "Error", JOptionPane.ERROR_MESSAGE);
+                                    showErrorDialog("You don't have enough balance for this purchase");
                                     return;
                                 }
 
@@ -125,7 +125,7 @@ public class GUI extends JFrame {
                                     sales.addSale(activeUser.getUuid(),selectedProduct.getProductID(), quantity, selectedProduct.getPrice(), selectedProduct.getCost(), now);                                    products.updateProduct(selectedProduct);
                                     list.repaint();
                                 } catch (SQLException ex) {
-                                    JOptionPane.showMessageDialog(null, "Couldn't update product or add sale", "Error", JOptionPane.ERROR_MESSAGE);
+                                    showErrorDialog("Couldn't update product or add sale");
                                 }
                             }
                         }
@@ -145,7 +145,7 @@ public class GUI extends JFrame {
                                     products.updateProduct(updatedProduct);
                                     list.repaint();
                                 } catch (SQLException ex) {
-                                    JOptionPane.showMessageDialog(null, "Couldn't update product", "Error", JOptionPane.ERROR_MESSAGE);
+                                    showErrorDialog("Couldn't update product");
                                 }
                             }
                         }
@@ -167,7 +167,7 @@ public class GUI extends JFrame {
                                 // Repaint the list
                                 list.repaint();
                             } catch (SQLException ex) {
-                                JOptionPane.showMessageDialog(null, "Couldn't add product", "Error", JOptionPane.ERROR_MESSAGE);
+                                showErrorDialog("Couldn't add product");
                             }
                         }
                     }
@@ -274,7 +274,7 @@ public class GUI extends JFrame {
                         try {
                             saleList = sales.getAllSales();
                         } catch (SQLException ex) {
-                            JOptionPane.showMessageDialog(null, "Couldn't load sales", "Error", JOptionPane.ERROR_MESSAGE);
+                            showErrorDialog("Couldn't load sales");
                             return;
                         }
 
@@ -347,7 +347,7 @@ public class GUI extends JFrame {
                             try {
                                 saleList = sales.getSalesWithinPeriod(startDate, endDate);
                             } catch (SQLException ex) {
-                                JOptionPane.showMessageDialog(null, "Couldn't load sales within period", "Error", JOptionPane.ERROR_MESSAGE);
+                                showErrorDialog("Couldn't load sales within period");
                                 return;
                             }
 
@@ -400,7 +400,7 @@ public class GUI extends JFrame {
                 try {
                     user = users.getUserById(selectedSale.getUserID());
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error getting user data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("Error getting user data: " + ex.getMessage());
                 }
 
                 // Get the product that was sold
@@ -408,7 +408,7 @@ public class GUI extends JFrame {
                 try {
                     product = products.getProductById(selectedSale.getProductID());
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error getting product data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("Error getting product data: " + ex.getMessage());
                 }
 
                 // Calculate cost and margin
@@ -520,7 +520,7 @@ public class GUI extends JFrame {
 
                     } else {
                         // Login failed
-                        JOptionPane.showMessageDialog(null, "Invalid email or password", "Error", JOptionPane.ERROR_MESSAGE);
+                        showErrorDialog("Invalid email or password");
                     }
 
                 }
@@ -570,7 +570,7 @@ public class GUI extends JFrame {
                         JOptionPane.showMessageDialog(null, "User registered successfully");
                     } else {
                         // Registration failed
-                        JOptionPane.showMessageDialog(null, "User with that email already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                        showErrorDialog("User with that email already exists");
                     }
                 }
             };
@@ -613,16 +613,19 @@ public class GUI extends JFrame {
                         users.updateUser(activeUser);
                         JOptionPane.showMessageDialog(null, "Balance updated successfully");
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "Invalid balance value", "Error", JOptionPane.ERROR_MESSAGE);
+                        showErrorDialog("Invalid balance value");
                     }
                 }
             }
         });
-        
-        
+
+
 
     }
 
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     private DefaultListModel createListModel(ArrayList<?> objects) {
         DefaultListModel model = new DefaultListModel();
@@ -631,7 +634,7 @@ public class GUI extends JFrame {
         }
         return model;
     }
-    
+
     public class ProductListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
