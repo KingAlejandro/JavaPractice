@@ -7,14 +7,15 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.text.DecimalFormat;
 
 /**
  * GUI class that extends JFrame and contains the main menu for the supermarket application.
  */
 public class GUI extends JFrame {
-    private Users users;
-    private Products products;
-    private Sales sales;
+    private final Users users;
+    private final Products products;
+    private final Sales sales;
     private User activeUser = null;
 
     public GUI(Users users, Products products, Sales sales) {
@@ -56,11 +57,11 @@ public class GUI extends JFrame {
         JButton productButton = new JButton("Product");
         productButton.setVisible(false);
 
-        /**
-         * ActionListener for the product button. When the button is clicked, displays information about all products
-         * in the database and allows the user to buy a product, edit a product (if the user is a manager or admin),
-         * or add a new product (if the user is a manager or admin).
-         * @param e the ActionEvent that triggered this method
+        /*
+          ActionListener for the product button. When the button is clicked, displays information about all products
+          in the database and allows the user to buy a product, edit a product (if the user is a manager or admin),
+          or add a new product (if the user is a manager or admin).
+          @param e the ActionEvent that triggered this method
          */
         productButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -297,7 +298,7 @@ public class GUI extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         // Get all sales from the database
                         JOptionPane.getRootFrame().dispose();
-                        ArrayList<Sale> saleList = null;
+                        ArrayList<Sale> saleList;
                         try {
                             saleList = sales.getAllSales();
                         } catch (SQLException ex) {
@@ -321,9 +322,11 @@ public class GUI extends JFrame {
                         scrollPane.setPreferredSize(new Dimension(400, 300));
 
                         // Create a panel to hold the buttons
-                        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-                        JButton infoButton = new JButton("Info");
+                        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                        JButton infoButton = new JButton("Sale Info");
+                        JButton reportButton = new JButton("Report");
                         buttonPanel2.add(infoButton);
+                        buttonPanel2.add(reportButton);
 
                         // Add an action listener to the info button
                         infoButton.addActionListener(new ActionListener() {
@@ -332,6 +335,18 @@ public class GUI extends JFrame {
                                 if (selectedSale != null) {
                                     showSaleInfo(selectedSale);
                                 }
+                            }
+                        });
+
+                        final ArrayList<Sale> finalSaleList = saleList;
+                        reportButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                if (finalSaleList.isEmpty()) {
+                                    showErrorDialog("No sales to display");
+                                    return;
+                                }
+                                generateReport(finalSaleList);
                             }
                         });
 
@@ -370,7 +385,7 @@ public class GUI extends JFrame {
                             LocalDateTime endDate = LocalDateTime.parse(endDateField.getText() + "T23:59:59");
 
                             // Get the sales within the specified period from the database
-                            ArrayList<Sale> saleList = null;
+                            ArrayList<Sale> saleList;
                             try {
                                 saleList = sales.getSalesWithinPeriod(startDate, endDate);
                             } catch (SQLException ex) {
@@ -394,7 +409,7 @@ public class GUI extends JFrame {
                             scrollPane.setPreferredSize(new Dimension(400, 300));
 
                             // Create a panel to hold the buttons
-                            JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                            JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
                             JButton infoButton = new JButton("Info");
                             buttonPanel2.add(infoButton);
 
@@ -419,7 +434,7 @@ public class GUI extends JFrame {
                 });
 
                 // Show the button panel in a dialog box
-                int result = JOptionPane.showConfirmDialog(null, buttonPanel, "Sales", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showConfirmDialog(null, buttonPanel, "Sales", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
             }
             private void showSaleInfo(Sale selectedSale) {
                 // Get the user who made the sale
@@ -483,6 +498,23 @@ public class GUI extends JFrame {
 
                 // Show the sale panel in a dialog box
                 JOptionPane.showMessageDialog(null, salePanel, "Sale Info", JOptionPane.PLAIN_MESSAGE);
+            }
+
+            private void generateReport(ArrayList<Sale> salesList) {
+                double totalSalePrice = 0.0;
+                double totalCostPrice = 0.0;
+                for (Sale sale : salesList) {
+                        totalSalePrice += sale.getPriceAtSale() * sale.getQuantitySold();
+                        totalCostPrice += sale.getCostAtSale() * sale.getQuantitySold();
+                }
+                double profit = totalSalePrice - totalCostPrice;
+                double profitMargin = 0.0;
+                if (totalSalePrice != 0.0) {
+                    profitMargin = profit / totalSalePrice * 100;
+                }
+                DecimalFormat df = new DecimalFormat("0.00");
+                String reportString = "Total Sale Price: $" + df.format(totalSalePrice) + "\nTotal Cost Price: $" + df.format(totalCostPrice) + "\nProfit: $" + df.format(profit) + "\nProfit Margin: " + df.format(profitMargin) + "%";
+                JOptionPane.showMessageDialog(null, reportString, "Sales Report", JOptionPane.PLAIN_MESSAGE);
             }
 
         });
@@ -551,7 +583,7 @@ public class GUI extends JFrame {
                     }
 
                 }
-            };
+            }
         });
 
         registerButton.addActionListener(new ActionListener() {
@@ -600,7 +632,7 @@ public class GUI extends JFrame {
                         showErrorDialog("User with that email already exists");
                     }
                 }
-            };
+            }
         });
 
         logoutButton.addActionListener(new ActionListener() {
