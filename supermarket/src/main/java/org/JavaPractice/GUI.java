@@ -635,6 +635,28 @@ public class GUI extends JFrame {
         return model;
     }
 
+    private void showSales(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
+        ArrayList<Sale> salesList;
+        if (startDate != null && endDate != null) {
+            salesList = sales.getSalesWithinPeriod(startDate, endDate);
+        } else {
+            salesList = sales.getAllSales();
+        }
+
+        if (salesList.isEmpty()) {
+            showErrorDialog("No sales to display");
+            return;
+        }
+
+        JList<Sale> saleList = new JList<>(createListModel(salesList));
+        saleList.setCellRenderer(new SaleListRenderer());
+
+        JScrollPane scrollPane = new JScrollPane(saleList);
+
+        JOptionPane.showMessageDialog(this, scrollPane, "Sales", JOptionPane.PLAIN_MESSAGE);
+    }
+
+
     public class ProductListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
