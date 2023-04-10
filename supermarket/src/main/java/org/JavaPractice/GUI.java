@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
+/**
+ * GUI class that extends JFrame and contains the main menu for the supermarket application.
+ */
 public class GUI extends JFrame {
     private Users users;
     private Products products;
@@ -52,6 +55,13 @@ public class GUI extends JFrame {
         gbc.gridy++;
         JButton productButton = new JButton("Product");
         productButton.setVisible(false);
+
+        /**
+         * ActionListener for the product button. When the button is clicked, displays information about all products
+         * in the database and allows the user to buy a product, edit a product (if the user is a manager or admin),
+         * or add a new product (if the user is a manager or admin).
+         * @param e the ActionEvent that triggered this method
+         */
         productButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -82,6 +92,12 @@ public class GUI extends JFrame {
 
                 // Add action listeners to Buy and Edit buttons
                 buyButton.addActionListener(new ActionListener() {
+                    /**
+                     * ActionListener for the Buy button. When the button is clicked, allows the user to select a
+                     * product to buy and enter a quantity to purchase. If the user confirms the purchase, updates the
+                     * selected product's quantity and adds a new sale to the Sales database.
+                     * @param e the ActionEvent that triggered this method
+                     */
                     public void actionPerformed(ActionEvent e) {
 // Get the selected product from the list
                         Product selectedProduct = list.getSelectedValue();
@@ -133,6 +149,12 @@ public class GUI extends JFrame {
                 });
 
                 editButton.addActionListener(new ActionListener() {
+                    /**
+                     * ActionListener for the Edit button. When the button is clicked, allows the user to select a
+                     * product to edit and modify its name, quantity, and price. If the user confirms the changes, updates
+                     * the product in the database.
+                     * @param e the ActionEvent that triggered this method
+                     */
                     public void actionPerformed(ActionEvent e) {
                         // Get the selected product from the list
                         Product selectedProduct = list.getSelectedValue();
@@ -154,6 +176,11 @@ public class GUI extends JFrame {
                 });
 
                 addProductButton.addActionListener(new ActionListener() {
+                    /**
+                     * ActionListener for the Add Product button. When the button is clicked, allows the user to enter
+                     * information about a new product and add it to the database.
+                     * @param e the ActionEvent that triggered this method
+                     */
                     public void actionPerformed(ActionEvent e) {
                         // Create a new product with default values
                         Product product = new Product("", 0.0, 0.0, 0, 0);
@@ -627,6 +654,11 @@ public class GUI extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Creates a DefaultListModel containing the given list of products.
+     * @param objects the list of objects to add to the list model
+     * @return the DefaultListModel containing the products
+     */
     private DefaultListModel createListModel(ArrayList<?> objects) {
         DefaultListModel model = new DefaultListModel();
         for (Object obj : objects) {
@@ -679,8 +711,5 @@ public class GUI extends JFrame {
             return label;
         }
     }
-
-
-
 
 }
