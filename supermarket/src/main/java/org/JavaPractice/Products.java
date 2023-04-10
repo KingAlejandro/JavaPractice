@@ -55,16 +55,15 @@ public class Products {
     }
 
 
-    public boolean addProduct(String name, double price, double cost, double weight, int quantity) throws SQLException {
+    public boolean addProduct(Product product) throws SQLException {
         String query = "INSERT INTO products (productID, name, price, cost, weight, quantity) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            String productID = UUID.randomUUID().toString();
-            statement.setString(1, productID);
-            statement.setString(2, name);
-            statement.setDouble(3, price);
-            statement.setDouble(4, cost);
-            statement.setDouble(5, weight);
-            statement.setInt(6, quantity);
+            statement.setString(1, product.getProductID());
+            statement.setString(2, product.getName());
+            statement.setDouble(3, product.getPrice());
+            statement.setDouble(4, product.getCost());
+            statement.setDouble(5, product.getWeight());
+            statement.setInt(6, product.getQuantity());
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;

@@ -165,17 +165,8 @@ public class GUI extends JFrame {
                         Product updatedProduct = showProductDialog("Add Product", product);
                         if (updatedProduct != null) {
                             try {
-                                products.addProduct(updatedProduct.getName(), updatedProduct.getPrice(), updatedProduct.getCost(), updatedProduct.getWeight(), updatedProduct.getQuantity());
-
-                                // Get all products from the database
-                                ArrayList<Product> productList = products.getAllProducts();
-
-                                // Update the list model with the new list of products
-                                listModel.clear();
-                                for (Product p : productList) {
-                                    listModel.addElement(p);
-                                }
-
+                                products.addProduct(updatedProduct);
+                                listModel.addElement(updatedProduct);
                                 // Repaint the list
                                 list.repaint();
                             } catch (SQLException ex) {
