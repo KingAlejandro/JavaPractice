@@ -411,7 +411,9 @@ public class GUI extends JFrame {
                             // Create a panel to hold the buttons
                             JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
                             JButton infoButton = new JButton("Info");
+                            JButton reportButton = new JButton("Report");
                             buttonPanel2.add(infoButton);
+                            buttonPanel2.add(reportButton);
 
                             // Add an action listener to the info button
                             infoButton.addActionListener(new ActionListener() {
@@ -420,6 +422,18 @@ public class GUI extends JFrame {
                                     if (selectedSale != null) {
                                         showSaleInfo(selectedSale);
                                     }
+                                }
+                            });
+
+                            final ArrayList<Sale> finalSaleList = saleList;
+                            reportButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    if (finalSaleList.isEmpty()) {
+                                        showErrorDialog("No sales to display");
+                                        return;
+                                    }
+                                    generateReport(finalSaleList);
                                 }
                             });
 
